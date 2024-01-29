@@ -2,8 +2,7 @@ package dataservice
 
 import (
 	"auth-service/configs"
-	"auth-service/internal/app/dataservice/sessiondata"
-	"auth-service/internal/app/dataservice/tokendata"
+	d "auth-service/internal/app/dataservice/operations"
 	m "auth-service/internal/app/model"
 	"fmt"
 
@@ -12,19 +11,19 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewSessionDatabase(config configs.Config) *sessiondata.Database {
+func NewSessionDatabase(config configs.Config) *d.SessionDatabase {
 	rClient := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%d", config.Redis.Host, config.Redis.Port),
 		Password: config.Redis.Password,
 		DB:       0,
 	})
 
-	return &sessiondata.Database{
+	return &d.SessionDatabase{
 		DB: rClient,
 	}
 }
 
-func NewResetTokenDatabase(config configs.Config) *tokendata.Database[m.ResetToken] {
+func NewResetTokenDatabase(config configs.Config) *d.TokenDatabase[m.ResetToken] {
 	DSN := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
 		config.Postgres.Host,
 		config.Postgres.Username,
@@ -39,10 +38,10 @@ func NewResetTokenDatabase(config configs.Config) *tokendata.Database[m.ResetTok
 		panic(err)
 	}
 
-	return &tokendata.Database[m.ResetToken]{DB: db}
+	return &d.TokenDatabase[m.ResetToken]{DB: db}
 }
 
-func NewVerificationTokenDatabase(config configs.Config) *tokendata.Database[m.VerificationToken] {
+func NewVerificationTokenDatabase(config configs.Config) *d.TokenDatabase[m.VerificationToken] {
 	DSN := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
 		config.Postgres.Host,
 		config.Postgres.Username,
@@ -57,5 +56,5 @@ func NewVerificationTokenDatabase(config configs.Config) *tokendata.Database[m.V
 		panic(err)
 	}
 
-	return &tokendata.Database[m.VerificationToken]{DB: db}
+	return &d.TokenDatabase[m.VerificationToken]{DB: db}
 }

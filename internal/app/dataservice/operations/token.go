@@ -1,4 +1,4 @@
-package tokendata
+package operations
 
 import (
 	m "auth-service/internal/app/model"
@@ -9,11 +9,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type Database[T m.Tokens] struct {
+type TokenDatabase[T m.Tokens] struct {
 	DB *gorm.DB
 }
 
-func (d *Database[T]) errorHandle(err error) error {
+func (d *TokenDatabase[T]) errorHandle(err error) error {
 	if err == nil {
 		return nil
 	}
@@ -36,7 +36,7 @@ func (d *Database[T]) errorHandle(err error) error {
 	return e.NewDBError(e.DbSystem, err.Error(), fmt.Errorf("Something went wrong."))
 }
 
-func (d *Database[T]) Create(token *T) error {
+func (d *TokenDatabase[T]) Create(token *T) error {
 	if err := d.DB.Create(token).Error; err != nil {
 		return d.errorHandle(err)
 	}
@@ -44,7 +44,7 @@ func (d *Database[T]) Create(token *T) error {
 	return nil
 }
 
-func (d *Database[T]) Get(conditions map[string]interface{}) (*T, error) {
+func (d *TokenDatabase[T]) Get(conditions map[string]interface{}) (*T, error) {
 	var token T
 
 	if err := d.DB.Where(conditions).First(&token).Error; err != nil {
@@ -54,7 +54,7 @@ func (d *Database[T]) Get(conditions map[string]interface{}) (*T, error) {
 	return &token, nil
 }
 
-func (d *Database[T]) Delete(condition map[string]interface{}) error {
+func (d *TokenDatabase[T]) Delete(condition map[string]interface{}) error {
 	var token T
 
 	if err := d.DB.Where(condition).Delete(&token).Error; err != nil {

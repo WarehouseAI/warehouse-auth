@@ -1,4 +1,4 @@
-package sessiondata
+package operations
 
 import (
 	m "auth-service/internal/app/model"
@@ -12,13 +12,12 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-type Database struct {
+type SessionDatabase struct {
 	DB *redis.Client
 }
 
 // TODO: Подумать над errorHandler как в sql функциях
-
-func (d *Database) Create(ctx context.Context, userId string) (*m.Session, error) {
+func (d *SessionDatabase) Create(ctx context.Context, userId string) (*m.Session, error) {
 	TTL := 24 * time.Hour
 	sessionId := uuid.Must(uuid.NewV4()).String()
 
@@ -40,7 +39,7 @@ func (d *Database) Create(ctx context.Context, userId string) (*m.Session, error
 	return &m.Session{ID: sessionId, Payload: sessionPayload, TTL: TTL}, nil
 }
 
-func (d *Database) Get(ctx context.Context, sessionId string) (*m.Session, error) {
+func (d *SessionDatabase) Get(ctx context.Context, sessionId string) (*m.Session, error) {
 	var sessionPayload m.SessionPayload
 
 	record := d.DB.Get(ctx, sessionId)
@@ -60,7 +59,7 @@ func (d *Database) Get(ctx context.Context, sessionId string) (*m.Session, error
 	return &m.Session{ID: sessionId, Payload: sessionPayload, TTL: TTLInfo}, nil
 }
 
-func (d *Database) Delete(ctx context.Context, sessionId string) error {
+func (d *SessionDatabase) Delete(ctx context.Context, sessionId string) error {
 	if err := d.DB.Del(ctx, sessionId).Err(); err != nil {
 		return e.NewDBError(e.DbSystem, err.Error(), fmt.Errorf("Something went wrong."))
 	}
@@ -68,7 +67,7 @@ func (d *Database) Delete(ctx context.Context, sessionId string) error {
 	return nil
 }
 
-func (d *Database) Update(ctx context.Context, sessionId string) (*string, *m.Session, error) {
+func (d *SessionDatabase) Update(ctx context.Context, sessionId string) (*string, *m.Session, error) {
 	session, err := d.Get(ctx, sessionId)
 
 	if err != nil {
