@@ -7,6 +7,7 @@ import (
 	"auth-service/cmd/server"
 	"auth-service/configs"
 	"auth-service/internal/pkg/logger"
+	"fmt"
 
 	"github.com/sirupsen/logrus"
 )
@@ -24,13 +25,12 @@ func main() {
 	log.Infoln("✅ Logger successfully connected.")
 
 	sessionDB := dataservice.NewSessionDatabase(*config)
-	resetTokenDB := dataservice.NewResetTokenDatabase(*config)
-	verificationTokenDB := dataservice.NewVerificationTokenDatabase(*config)
+	resetTokenDB, verificationTokenDB := dataservice.NewSqlDatabase(*config)
 	broker := broker.NewBroker(*config)
 
 	log.Infoln("✅ Database successfully connected.")
 
-	grpcServer := grpc.Start("auth:8041", sessionDB, log)
+	grpcServer := grpc.Start(fmt.Sprintf("%s:%s", config.Server.GrpcHost, config.Server.GrpcPort), sessionDB, verificationTokenDB, broker, log)
 	go grpcServer()
 
 	if err := server.Start(

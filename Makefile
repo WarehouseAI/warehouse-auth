@@ -6,5 +6,5 @@ gen_adapter_mocks:
 	mockgen -package=mocks -source=internal/app/adapter/adapter.go \
 	-destination=internal/pkg/mocks/mock_adapter.go
 
-convert_user_proto:
+convert_proto:
 	protoc -I=./proto --go_out=./internal/pkg --go-grpc_out=./internal/pkg user.proto auth.proto

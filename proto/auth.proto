@@ -12,7 +12,18 @@ message AuthenticationResponse {
   string session_id = 2;
 }
 
+message VerifyEmailRequest {
+  string user_id = 1;
+  string user_firstname = 2;
+  string user_email = 3;
+}
+
+message VerifyEmailResponse {
+  string user_id = 2;
+}
+
 service AuthService {
   rpc Authenticate(AuthenticationRequest) returns (AuthenticationResponse);
+  rpc SendVerificationEmail(VerifyEmailRequest) returns (VerifyEmailResponse);
 }
 

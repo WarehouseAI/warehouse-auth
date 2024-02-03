@@ -1,26 +1,29 @@
-package register
+package confirm
 
 import (
 	"auth-service/internal/app/adapter"
 	"auth-service/internal/app/dataservice"
+	m "auth-service/internal/app/model"
 	e "auth-service/internal/pkg/errors/http"
+	"auth-service/internal/pkg/utils"
 	"context"
 	"fmt"
+	"net/http"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-type RegisterVerifyRequest struct {
+type ConfirmRequest struct {
 	Token  string `json:"token"`
 	UserId string `json:"user_id"`
 }
 
-type RegisterVerifyResponse struct {
+type ConfirmResponse struct {
 	Verified bool `json:"verified"`
 }
 
-func validateVerifyRequest(request RegisterVerifyRequest) error {
+func validateConfirmRequest(request ConfirmRequest) error {
 	if request.Token == "" || request.UserId == "" {
 		return e.NewHttpError(400, "", fmt.Errorf("One of the parameters is empty."))
 	}
@@ -28,12 +31,31 @@ func validateVerifyRequest(request RegisterVerifyRequest) error {
 	return nil
 }
 
-func RegisterVerify(
-	request RegisterVerifyRequest,
+func CreateAndStoreVerificationToken(userId string, tokenRepo dataservice.VerificationTokenInterface) (string, error) {
+	token, tokenHash, err := utils.GenerateAndHashToken(12)
+
+	if err != nil {
+		return "", e.NewHttpError(http.StatusInternalServerError, err.Error(), fmt.Errorf("Something went wrong."))
+	}
+
+	verificationTokenItem := m.VerificationToken{
+		UserId: userId,
+		Token:  tokenHash,
+	}
+
+	if err := tokenRepo.Create(&verificationTokenItem); err != nil {
+		return "", e.NewHttpErrorByDbStatus(err)
+	}
+
+	return token, nil
+}
+
+func ConfirmEmail(
+	request ConfirmRequest,
 	user adapter.UserGrpcInterface,
 	verificationToken dataservice.VerificationTokenInterface,
-) (*RegisterVerifyResponse, error) {
-	if err := validateVerifyRequest(request); err != nil {
+) (*ConfirmResponse, error) {
+	if err := validateConfirmRequest(request); err != nil {
 		return nil, err
 	}
 
@@ -64,5 +86,5 @@ func RegisterVerify(
 		return nil, e.NewHttpErrorByDbStatus(err)
 	}
 
-	return &RegisterVerifyResponse{Verified: verified}, nil
+	return &ConfirmResponse{Verified: verified}, nil
 }

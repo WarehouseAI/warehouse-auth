@@ -6,6 +6,7 @@ import (
 	m "auth-service/internal/app/model"
 	h "auth-service/internal/app/server/handlers"
 	mw "auth-service/internal/app/server/middleware"
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/handlers"
@@ -23,13 +24,14 @@ func setupCors(origins []string) func(http.Handler) http.Handler {
 }
 
 func setupRoutes(r *mux.Router, logger *logrus.Logger, h *h.Handler) {
-	r.HandleFunc("/register", mw.WriteLog(logger, h.RegisterHandler)).Methods("POST")
-	r.HandleFunc("/register/confirm", mw.WriteLog(logger, h.RegisterVerifyHandler)).Methods("GET")
-	r.HandleFunc("/reset/request", mw.WriteLog(logger, h.RequestPasswordResetHandler)).Methods("POST")
-	r.HandleFunc("/reset/verify", mw.WriteLog(logger, h.VerifyPasswordResetHandler)).Methods("GET")
-	r.HandleFunc("/reset/confirm", mw.WriteLog(logger, h.ConfirmPasswordResetHandler)).Methods("POST")
-	r.HandleFunc("/logout", mw.WriteLog(logger, h.LogoutHandler)).Methods("DELETE")
-	r.HandleFunc("/whoami", mw.WriteLog(logger, h.WhoAmIHandler)).Methods("GET")
+	r.HandleFunc("/login", mw.LoggerMW(logger, h.LoginHandler)).Methods("POST")
+	r.HandleFunc("/register", mw.LoggerMW(logger, h.RegisterHandler)).Methods("POST")
+	r.HandleFunc("/confirm", mw.LoggerMW(logger, h.ConfirmHandler)).Methods("GET")
+	r.HandleFunc("/reset/request", mw.LoggerMW(logger, h.RequestPasswordResetHandler)).Methods("POST")
+	r.HandleFunc("/reset/verify", mw.LoggerMW(logger, h.VerifyPasswordResetHandler)).Methods("GET")
+	r.HandleFunc("/reset/confirm", mw.LoggerMW(logger, h.ConfirmPasswordResetHandler)).Methods("POST")
+	r.HandleFunc("/logout", mw.LoggerMW(logger, h.LogoutHandler)).Methods("DELETE")
+	r.HandleFunc("/whoami", mw.LoggerMW(logger, h.WhoAmIHandler)).Methods("GET")
 }
 
 func Start(
@@ -42,11 +44,11 @@ func Start(
 	broker *broker.Broker,
 	logger *logrus.Logger,
 ) error {
-	hands := h.NewHandlers(resetDB, verificationDB, sessionDB, userServiceAddr, broker, logger)
+	hands := h.NewHandlers(resetDB, verificationDB, sessionDB, userServiceAddr, broker)
 	router := mux.NewRouter()
 
-	router.PathPrefix("/auth")
-	setupRoutes(router, logger, hands)
+	authRouter := router.PathPrefix("/auth").Subrouter()
+	setupRoutes(authRouter, logger, hands)
 
-	return http.ListenAndServe(":"+port, setupCors(allowedOrigins)(router))
+	return http.ListenAndServe(fmt.Sprintf(":%s", port), setupCors(allowedOrigins)(router))
 }

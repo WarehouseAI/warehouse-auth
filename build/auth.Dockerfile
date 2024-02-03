@@ -1,4 +1,4 @@
-FROM golang:1.20-alpine AS build-stage
+FROM golang:1.21.6-alpine AS build-stage
 
 WORKDIR /auth-service
 ENV GOPATH=/
@@ -9,10 +9,10 @@ ARG GRPC_PORT
 COPY go.mod go.sum ./
 RUN go mod download
 
-COPY /proto ./
-COPY /internal ./
-COPY /configs ./
-COPY /cmd ./
+COPY /proto ./proto
+COPY /internal ./internal
+COPY /configs ./configs
+COPY /cmd ./cmd
 RUN CGO_ENABLED=0 GOOS=linux go build -o /auth cmd/main.go
 
 # Deploy the application binary into a lean image
@@ -25,10 +25,10 @@ COPY --from=build-stage /auth /auth
 EXPOSE ${SERVER_PORT}
 EXPOSE ${GRPC_PORT}
 
-# Download alpine package and install psql-client for the script
-COPY wait-4-postgres.sh ./
-RUN apk update
-RUN apk add postgresql-client
-RUN chmod +x wait-4-postgres.sh
+# # Download alpine package and install psql-client for the script
+# COPY wait-4-postgres.sh ./
+# RUN apk update
+# RUN apk add postgresql-client
+# RUN chmod +x wait-4-postgres.sh
 
 ENTRYPOINT ["/auth"]

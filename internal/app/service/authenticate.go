@@ -7,8 +7,8 @@ import (
 	"context"
 )
 
-func Authenticate(sessionId string, session dataservice.SessionInterface) (*string, *m.Session, error) {
-	userId, newSession, err := session.Update(context.Background(), sessionId)
+func Authenticate(sessionId string, sessionRepo dataservice.SessionInterface) (*string, *m.Session, error) {
+	userId, newSession, err := sessionRepo.Update(context.Background(), sessionId)
 
 	if err != nil {
 		return nil, nil, e.NewHttpErrorByDbStatus(err)

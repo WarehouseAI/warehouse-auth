@@ -1,4 +1,4 @@
-package register
+package confirm
 
 import (
 	m "auth-service/internal/app/model"
@@ -16,24 +16,24 @@ import (
 )
 
 func TestVerifyValidate(t *testing.T) {
-	request := RegisterVerifyRequest{
+	request := ConfirmRequest{
 		Token:  "someToken",
 		UserId: "some-uuid",
 	}
 
-	err := validateVerifyRequest(request)
+	err := validateConfirmRequest(request)
 	require.Nil(t, err)
 }
 
 func TestVerifyValidateError(t *testing.T) {
-	request := RegisterVerifyRequest{
+	request := ConfirmRequest{
 		Token:  "",
 		UserId: "",
 	}
 
 	expErr := e.NewHttpError(400, "", fmt.Errorf("One of the parameters is empty."))
 
-	err := validateVerifyRequest(request)
+	err := validateConfirmRequest(request)
 	require.NotNil(t, err)
 	require.Equal(t, expErr, err)
 }
@@ -54,7 +54,7 @@ func TestRegisterVerify(t *testing.T) {
 		CreatedAt: time.Now(),
 	}
 
-	request := RegisterVerifyRequest{
+	request := ConfirmRequest{
 		Token:  plainTokenPayload,
 		UserId: existToken.UserId,
 	}
@@ -63,8 +63,8 @@ func TestRegisterVerify(t *testing.T) {
 	grpcMock.EXPECT().UpdateVerificationStatus(context.Background(), request.UserId).Return(true, nil).Times(1)
 	repositoryMock.EXPECT().Delete(map[string]interface{}{"id": existToken.ID}).Return(nil).Times(1)
 
-	resp, err := RegisterVerify(request, grpcMock, repositoryMock)
+	resp, err := ConfirmEmail(request, grpcMock, repositoryMock)
 
 	require.Nil(t, err)
-	require.Equal(t, &RegisterVerifyResponse{Verified: true}, resp)
+	require.Equal(t, &ConfirmResponse{Verified: true}, resp)
 }

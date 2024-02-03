@@ -8,7 +8,9 @@ type Config struct {
 	Server struct {
 		Env            string   `envconfig:"SERVER_ENV"`
 		Port           string   `envconfig:"SERVER_PORT"`
-		UserAddr       string   `envconfig:"SERVER_USERADDR"`
+		GrpcPort       string   `envconfig:"SERVER_GRPC_PORT"`
+		GrpcHost       string   `envconfig:"SERVER_GRPC_HOST"`
+		UserAddr       string   `envconfig:"SERVER_USER_ADDR"`
 		AllowedOrigins []string `endconfig:"SERVER_ALLOWED_ORIGINS"`
 	}
 
@@ -17,13 +19,13 @@ type Config struct {
 		Port     int    `envconfig:"PSQL_DB_PORT"`
 		Database string `envconfig:"PSQL_DB_NAME"`
 		Username string `envconfig:"PSQL_DB_USER"`
-		Password string `envconfig:"PSQL_DB_PASSWORD"`
+		Password string `envconfig:"PSQL_DB_PASS"`
 	}
 
 	Redis struct {
-		Host     string `envconfig:"SESSION_DB_HOST"`
-		Port     int    `envconfig:"SESSION_DB_PORT"`
-		Password string `envconfig:"SESSION_DB_PASSWORD"`
+		Host     string `envconfig:"REDIS_DB_HOST"`
+		Port     int    `envconfig:"REDIS_DB_PORT"`
+		Password string `envconfig:"REDIS_DB_PASSWORD"`
 	}
 
 	Rabbit struct {
@@ -37,7 +39,7 @@ type Config struct {
 
 func ReadConfig() (*Config, error) {
 	var cfg Config
-	err := envconfig.Process("", cfg)
+	err := envconfig.Process("", &cfg)
 
 	if err != nil {
 		return nil, err

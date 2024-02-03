@@ -1,5 +1,11 @@
 package email
 
+import (
+	"auth-service/internal/app/adapter"
+	"fmt"
+	"os"
+)
+
 type EmailType string
 
 const (
@@ -45,4 +51,19 @@ var Messages map[EmailType]EmailPayload = map[EmailType]EmailPayload{
 		WarehouseAI Team
 		`,
 	},
+}
+
+func SendVerification(userId, token, firstname, email string, broker adapter.BrokerInterface) error {
+	emailPayload := Messages[AccountVerification]
+	emailPayload.Message = fmt.Sprintf(emailPayload.Message, firstname, fmt.Sprintf("%s/confirm?user=%s&token=%s", os.Getenv("MAIL_DOMAIN"), userId, token))
+	message := Email{
+		To:           email,
+		EmailPayload: emailPayload,
+	}
+
+	if err := broker.SendMessage("mail", message); err != nil {
+		return err
+	}
+
+	return nil
 }

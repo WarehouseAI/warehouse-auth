@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -10,7 +11,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func WriteLog(logger *logrus.Logger, fn http.HandlerFunc) http.HandlerFunc {
+func LoggerMW(logger *logrus.Logger, fn http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		dump, err := httputil.DumpRequest(r, true)
 
@@ -30,18 +31,21 @@ func WriteLog(logger *logrus.Logger, fn http.HandlerFunc) http.HandlerFunc {
 		recorder := httptest.NewRecorder()
 		fn(recorder, r)
 
-		if recorder.Result().StatusCode != 200 || recorder.Result().StatusCode != 201 {
+		if recorder.Result().StatusCode != 200 && recorder.Result().StatusCode != 201 {
+			var jsonBody map[string]interface{}
+			json.Unmarshal(recorder.Body.Bytes(), &jsonBody)
+
 			if recorder.Result().StatusCode == 500 {
 				logger.WithFields(logrus.Fields{
 					"request_runtime": time.Since(startTime),
 					"response_status": recorder.Code,
-					"response_body":   recorder.Result().Body,
+					"response_body":   jsonBody,
 				}).Warn(fmt.Sprintf("Can't proceed %s request.", r.URL.Path))
 			} else {
 				logger.WithFields(logrus.Fields{
 					"request_runtime": time.Since(startTime),
 					"response_status": recorder.Code,
-					"response_body":   recorder.Result().Body,
+					"response_body":   jsonBody,
 				}).Info(fmt.Sprintf("Can't proceed %s request.", r.URL.Path))
 			}
 		} else {
@@ -50,5 +54,11 @@ func WriteLog(logger *logrus.Logger, fn http.HandlerFunc) http.HandlerFunc {
 				"response_status": recorder.Code,
 			}).Info("Request successfully completed.")
 		}
+
+		for key, values := range recorder.Header() {
+			w.Header()[key] = values
+		}
+		w.WriteHeader(recorder.Code)
+		_, _ = w.Write(recorder.Body.Bytes())
 	}
 }

@@ -3,6 +3,7 @@ package dataservice
 import (
 	"auth-service/configs"
 	d "auth-service/internal/app/dataservice/operations"
+	"auth-service/internal/app/model"
 	m "auth-service/internal/app/model"
 	"fmt"
 
@@ -23,13 +24,12 @@ func NewSessionDatabase(config configs.Config) *d.SessionDatabase {
 	}
 }
 
-func NewResetTokenDatabase(config configs.Config) *d.TokenDatabase[m.ResetToken] {
-	DSN := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
+func NewSqlDatabase(config configs.Config) (*d.TokenDatabase[m.ResetToken], *d.TokenDatabase[m.VerificationToken]) {
+	DSN := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=5432 sslmode=disable",
 		config.Postgres.Host,
 		config.Postgres.Username,
 		config.Postgres.Password,
 		config.Postgres.Database,
-		config.Postgres.Port,
 	)
 
 	db, err := gorm.Open(postgres.Open(DSN), &gorm.Config{})
@@ -38,23 +38,9 @@ func NewResetTokenDatabase(config configs.Config) *d.TokenDatabase[m.ResetToken]
 		panic(err)
 	}
 
-	return &d.TokenDatabase[m.ResetToken]{DB: db}
-}
+	db.Raw(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
+	db.AutoMigrate(&model.VerificationToken{})
+	db.AutoMigrate(&model.ResetToken{})
 
-func NewVerificationTokenDatabase(config configs.Config) *d.TokenDatabase[m.VerificationToken] {
-	DSN := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
-		config.Postgres.Host,
-		config.Postgres.Username,
-		config.Postgres.Password,
-		config.Postgres.Database,
-		config.Postgres.Port,
-	)
-
-	db, err := gorm.Open(postgres.Open(DSN), &gorm.Config{})
-	if err != nil {
-		fmt.Println("❌Failed to connect to the database.")
-		panic(err)
-	}
-
-	return &d.TokenDatabase[m.VerificationToken]{DB: db}
+	return &d.TokenDatabase[m.ResetToken]{DB: db}, &d.TokenDatabase[m.VerificationToken]{DB: db}
 }

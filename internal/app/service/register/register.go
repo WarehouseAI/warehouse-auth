@@ -3,16 +3,14 @@ package register
 import (
 	"auth-service/internal/app/adapter"
 	"auth-service/internal/app/dataservice"
-	m "auth-service/internal/app/model"
+	"auth-service/internal/app/service/confirm"
 	"auth-service/internal/pkg/email"
 	e "auth-service/internal/pkg/errors/http"
 	gen "auth-service/internal/pkg/protogen"
 	"context"
-	"encoding/base64"
 	"fmt"
-	"math/rand"
+	"net/http"
 	"net/mail"
-	"os"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -29,19 +27,6 @@ type RegisterRequest struct {
 
 type RegisterResponse struct {
 	UserId string `json:"user_id"`
-}
-
-func generateToken(length int) (string, error) {
-	randomBytes := make([]byte, length)
-
-	if _, err := rand.Read(randomBytes); err != nil {
-		return "", err
-	}
-
-	key := base64.URLEncoding.EncodeToString(randomBytes)
-	key = key[:length]
-
-	return key, nil
 }
 
 func hashPassword(password string) string {
@@ -83,45 +68,22 @@ func Register(
 		return nil, httpErr
 	}
 
-	token, err := generateToken(12)
+	verificationToken, createTokenErr := confirm.CreateAndStoreVerificationToken(userId, tokenRepository)
 
-	if err != nil {
-		return nil, e.NewHttpError(500, err.Error(), fmt.Errorf("Something went wrong."))
-	}
-
-	tokenHash, err := bcrypt.GenerateFromPassword([]byte(token), 12)
-
-	if err != nil {
-		return nil, e.NewHttpError(500, err.Error(), fmt.Errorf("Something went wrong."))
-	}
-
-	// Store verification token
-	verificationTokenItem := m.VerificationToken{
-		UserId: userId,
-		Token:  string(tokenHash),
-	}
-
-	if err := tokenRepository.Create(&verificationTokenItem); err != nil {
-		if err := broker.SendMessage("user_saga", userId); err != nil {
-			return nil, e.NewHttpError(500, err.Error(), fmt.Errorf("Something went wrong."))
+	if createTokenErr != nil {
+		if brokerErr := broker.SendMessage("user_saga", userId); brokerErr != nil {
+			return nil, e.NewHttpError(500, brokerErr.Error(), fmt.Errorf("Something went wrong."))
 		}
 
-		return nil, e.NewHttpErrorByDbStatus(err)
+		return nil, createTokenErr
 	}
 
-	emailPayload := email.Messages[email.AccountVerification]
-	emailPayload.Message = fmt.Sprintf(emailPayload.Message, req.Firstname, fmt.Sprintf("%s/register/confirm?user=%s&token=%s", os.Getenv("DOMAIN"), userId, token))
-	message := email.Email{
-		To:           req.Email,
-		EmailPayload: emailPayload,
-	}
-
-	if err := broker.SendMessage("mail", message); err != nil {
+	if err := email.SendVerification(userId, verificationToken, req.Firstname, req.Email, broker); err != nil {
 		if err := broker.SendMessage("user_saga", userId); err != nil {
-			return nil, e.NewHttpError(500, err.Error(), fmt.Errorf("Something went wrong."))
+			return nil, e.NewHttpError(http.StatusInternalServerError, err.Error(), fmt.Errorf("Something went wrong."))
 		}
 
-		return nil, e.NewHttpErrorByDbStatus(err)
+		return nil, e.NewHttpError(http.StatusInternalServerError, err.Error(), fmt.Errorf("Something went wrong."))
 	}
 
 	return &RegisterResponse{UserId: userId}, nil

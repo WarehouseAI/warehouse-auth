@@ -7,14 +7,13 @@ import (
 	m "auth-service/internal/app/model"
 	"auth-service/internal/app/server/response"
 	"auth-service/internal/app/service"
+	"auth-service/internal/app/service/confirm"
 	"auth-service/internal/app/service/login"
 	"auth-service/internal/app/service/register"
 	e "auth-service/internal/pkg/errors/http"
 	"encoding/json"
 	"fmt"
 	"net/http"
-
-	"github.com/sirupsen/logrus"
 )
 
 // func newHttpHandler(
@@ -45,7 +44,6 @@ type Handler struct {
 	SessionRepo      *d.SessionDatabase                    // sessions repo
 	UserClient       *user.UserGrpcClient
 	Broker           *broker.Broker
-	Logger           *logrus.Logger
 }
 
 // TODO: add error & logger middleware
@@ -56,7 +54,6 @@ func NewHandlers(
 	sessionRepo *d.SessionDatabase,
 	userAddr string,
 	broker *broker.Broker,
-	logger *logrus.Logger,
 ) *Handler {
 	userClient := user.NewUserGrpcClient(userAddr)
 
@@ -66,7 +63,6 @@ func NewHandlers(
 		SessionRepo:      sessionRepo,
 		UserClient:       userClient,
 		Broker:           broker,
-		Logger:           logger,
 	}
 }
 
@@ -118,6 +114,8 @@ func (h *Handler) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "sessionId",
 		Value:    session.ID,
+		Path:     "/",
+		MaxAge:   0,
 		SameSite: http.SameSiteNoneMode,
 		Secure:   true,
 	})
@@ -125,23 +123,23 @@ func (h *Handler) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, loginResp)
 }
 
-func (h *Handler) RegisterVerifyHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) ConfirmHandler(w http.ResponseWriter, r *http.Request) {
 	token := r.URL.Query().Get("token")
 	user := r.URL.Query().Get("user")
 
-	request := register.RegisterVerifyRequest{
+	request := confirm.ConfirmRequest{
 		UserId: user,
 		Token:  token,
 	}
 
-	verifyResp, err := register.RegisterVerify(request, h.UserClient, h.VerificationRepo)
+	confirmResp, err := confirm.ConfirmEmail(request, h.UserClient, h.VerificationRepo)
 
 	if err != nil {
 		response.WithError(w, err)
 		return
 	}
 
-	response.JSON(w, http.StatusOK, verifyResp)
+	response.JSON(w, http.StatusOK, confirmResp)
 }
 
 func (h *Handler) ConfirmPasswordResetHandler(w http.ResponseWriter, r *http.Request) {
