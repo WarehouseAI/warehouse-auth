@@ -101,18 +101,18 @@ func (mr *MockUserGrpcInterfaceMockRecorder) ResetPassword(ctx, resetPasswordReq
 }
 
 // UpdateVerificationStatus mocks base method.
-func (m *MockUserGrpcInterface) UpdateVerificationStatus(ctx context.Context, userId string) (bool, error) {
+func (m *MockUserGrpcInterface) UpdateVerificationStatus(ctx context.Context, userId, email string) (bool, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateVerificationStatus", ctx, userId)
+	ret := m.ctrl.Call(m, "UpdateVerificationStatus", ctx, userId, email)
 	ret0, _ := ret[0].(bool)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // UpdateVerificationStatus indicates an expected call of UpdateVerificationStatus.
-func (mr *MockUserGrpcInterfaceMockRecorder) UpdateVerificationStatus(ctx, userId any) *gomock.Call {
+func (mr *MockUserGrpcInterfaceMockRecorder) UpdateVerificationStatus(ctx, userId, email any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateVerificationStatus", reflect.TypeOf((*MockUserGrpcInterface)(nil).UpdateVerificationStatus), ctx, userId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateVerificationStatus", reflect.TypeOf((*MockUserGrpcInterface)(nil).UpdateVerificationStatus), ctx, userId, email)
 }
 
 // MockBrokerInterface is a mock of BrokerInterface interface.

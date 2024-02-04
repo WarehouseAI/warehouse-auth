@@ -40,7 +40,7 @@ func (s *AuthGrpcServer) SendEmailVerification(ctx context.Context, req *gen.Ver
 		return nil, status.Errorf(codes.InvalidArgument, "Empty request data")
 	}
 
-	verificationToken, err := confirm.CreateAndStoreVerificationToken(req.UserId, s.TokenRepo)
+	verificationToken, err := confirm.CreateAndStoreVerificationToken(req.UserId, req.UserEmail, s.TokenRepo)
 
 	if err != nil {
 		return nil, e.NewGrpcErrorByHttpStatus(err)

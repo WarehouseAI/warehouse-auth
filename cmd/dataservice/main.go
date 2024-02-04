@@ -4,7 +4,6 @@ import (
 	"auth-service/configs"
 	d "auth-service/internal/app/dataservice/operations"
 	"auth-service/internal/app/model"
-	m "auth-service/internal/app/model"
 	"fmt"
 
 	"github.com/redis/go-redis/v9"
@@ -24,7 +23,7 @@ func NewSessionDatabase(config configs.Config) *d.SessionDatabase {
 	}
 }
 
-func NewSqlDatabase(config configs.Config) (*d.TokenDatabase[m.ResetToken], *d.TokenDatabase[m.VerificationToken]) {
+func NewSqlDatabase(config configs.Config) (*d.ResetTokenDB, *d.VerificationTokenDB) {
 	DSN := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=5432 sslmode=disable",
 		config.Postgres.Host,
 		config.Postgres.Username,
@@ -42,5 +41,5 @@ func NewSqlDatabase(config configs.Config) (*d.TokenDatabase[m.ResetToken], *d.T
 	db.AutoMigrate(&model.VerificationToken{})
 	db.AutoMigrate(&model.ResetToken{})
 
-	return &d.TokenDatabase[m.ResetToken]{DB: db}, &d.TokenDatabase[m.VerificationToken]{DB: db}
+	return &d.ResetTokenDB{DB: db}, &d.VerificationTokenDB{DB: db}
 }

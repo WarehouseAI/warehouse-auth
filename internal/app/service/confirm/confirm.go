@@ -31,7 +31,7 @@ func validateConfirmRequest(request ConfirmRequest) error {
 	return nil
 }
 
-func CreateAndStoreVerificationToken(userId string, tokenRepo dataservice.VerificationTokenInterface) (string, error) {
+func CreateAndStoreVerificationToken(userId, userEmail string, tokenRepo dataservice.VerificationTokenInterface) (string, error) {
 	token, tokenHash, err := utils.GenerateAndHashToken(12)
 
 	if err != nil {
@@ -40,10 +40,11 @@ func CreateAndStoreVerificationToken(userId string, tokenRepo dataservice.Verifi
 
 	verificationTokenItem := m.VerificationToken{
 		UserId: userId,
+		SendTo: userEmail,
 		Token:  tokenHash,
 	}
 
-	if err := tokenRepo.Create(&verificationTokenItem); err != nil {
+	if err := tokenRepo.Create(&verificationTokenItem, userEmail); err != nil {
 		return "", e.NewHttpErrorByDbStatus(err)
 	}
 
@@ -76,7 +77,7 @@ func ConfirmEmail(
 		return nil, e.NewHttpError(400, err.Error(), fmt.Errorf("Invalid register verification key"))
 	}
 
-	verified, httpErr := user.UpdateVerificationStatus(context.Background(), request.UserId)
+	verified, httpErr := user.UpdateVerificationStatus(context.Background(), request.UserId, existVerificationToken.SendTo)
 
 	if httpErr != nil {
 		return nil, httpErr

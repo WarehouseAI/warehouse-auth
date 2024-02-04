@@ -108,7 +108,7 @@ func TestRegister(t *testing.T) {
 	userId := uuid.Must(uuid.NewV4()).String()
 
 	grpcMock.EXPECT().Create(context.Background(), gomock.AssignableToTypeOf(&gen.CreateUserMsg{})).Return(userId, nil).Times(1)
-	dbMock.EXPECT().Create(gomock.AssignableToTypeOf(&m.VerificationToken{})).Return(nil).Times(1)
+	dbMock.EXPECT().Create(gomock.AssignableToTypeOf(&m.VerificationToken{}), request.Email).Return(nil).Times(1)
 	brokerMock.EXPECT().SendMessage("mail", gomock.AssignableToTypeOf(email.Email{})).Return(nil).Times(1)
 
 	resp, err := Register(request, grpcMock, dbMock, brokerMock)

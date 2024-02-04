@@ -52,6 +52,7 @@ message ResetPasswordResponse {
 // ---------- Update user status ----------
 message UpdateVerificationStatusRequest {
   string user_id = 1;
+  string email = 2;
 }
 
 message UpdateVerificationStatusResponse {

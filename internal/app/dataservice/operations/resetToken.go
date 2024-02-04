@@ -9,11 +9,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type TokenDatabase[T m.Tokens] struct {
+type ResetTokenDB struct {
 	DB *gorm.DB
 }
 
-func (d *TokenDatabase[T]) errorHandle(err error) error {
+func (d *ResetTokenDB) errorHandle(err error) error {
 	if err == nil {
 		return nil
 	}
@@ -36,7 +36,9 @@ func (d *TokenDatabase[T]) errorHandle(err error) error {
 	return e.NewDBError(e.DbSystem, err.Error(), fmt.Errorf("Something went wrong."))
 }
 
-func (d *TokenDatabase[T]) Create(token *T) error {
+func (d *ResetTokenDB) Create(token *m.ResetToken) error {
+	// Не смог вынести эту ручку в отдельный сервис, т.к. разные микросервисы
+
 	if err := d.DB.Create(token).Error; err != nil {
 		return d.errorHandle(err)
 	}
@@ -44,8 +46,8 @@ func (d *TokenDatabase[T]) Create(token *T) error {
 	return nil
 }
 
-func (d *TokenDatabase[T]) Get(conditions map[string]interface{}) (*T, error) {
-	var token T
+func (d *ResetTokenDB) Get(conditions map[string]interface{}) (*m.ResetToken, error) {
+	var token m.ResetToken
 
 	if err := d.DB.Where(conditions).First(&token).Error; err != nil {
 		return nil, d.errorHandle(err)
@@ -54,8 +56,8 @@ func (d *TokenDatabase[T]) Get(conditions map[string]interface{}) (*T, error) {
 	return &token, nil
 }
 
-func (d *TokenDatabase[T]) Delete(condition map[string]interface{}) error {
-	var token T
+func (d *ResetTokenDB) Delete(condition map[string]interface{}) error {
+	var token m.ResetToken
 
 	if err := d.DB.Where(condition).Delete(&token).Error; err != nil {
 		return d.errorHandle(err)

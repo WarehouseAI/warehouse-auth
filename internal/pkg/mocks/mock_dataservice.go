@@ -108,17 +108,17 @@ func (m *MockVerificationTokenInterface) EXPECT() *MockVerificationTokenInterfac
 }
 
 // Create mocks base method.
-func (m *MockVerificationTokenInterface) Create(newVerificationToken *model.VerificationToken) error {
+func (m *MockVerificationTokenInterface) Create(newVerificationToken *model.VerificationToken, email string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", newVerificationToken)
+	ret := m.ctrl.Call(m, "Create", newVerificationToken, email)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockVerificationTokenInterfaceMockRecorder) Create(newVerificationToken any) *gomock.Call {
+func (mr *MockVerificationTokenInterfaceMockRecorder) Create(newVerificationToken, email any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockVerificationTokenInterface)(nil).Create), newVerificationToken)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockVerificationTokenInterface)(nil).Create), newVerificationToken, email)
 }
 
 // Delete mocks base method.

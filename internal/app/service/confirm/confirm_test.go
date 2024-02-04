@@ -49,6 +49,7 @@ func TestRegisterVerify(t *testing.T) {
 	existToken := &m.VerificationToken{
 		ID:        uuid.Must(uuid.NewV4()),
 		UserId:    uuid.Must(uuid.NewV4()).String(),
+		SendTo:    "someEmail@mail.com",
 		Token:     string(hashTokenPayload),
 		ExpiresAt: time.Now().Add(time.Minute * 10),
 		CreatedAt: time.Now(),
@@ -60,7 +61,7 @@ func TestRegisterVerify(t *testing.T) {
 	}
 
 	repositoryMock.EXPECT().Get(map[string]interface{}{"user_id": existToken.UserId}).Return(existToken, nil).Times(1)
-	grpcMock.EXPECT().UpdateVerificationStatus(context.Background(), request.UserId).Return(true, nil).Times(1)
+	grpcMock.EXPECT().UpdateVerificationStatus(context.Background(), request.UserId, existToken.SendTo).Return(true, nil).Times(1)
 	repositoryMock.EXPECT().Delete(map[string]interface{}{"id": existToken.ID}).Return(nil).Times(1)
 
 	resp, err := ConfirmEmail(request, grpcMock, repositoryMock)

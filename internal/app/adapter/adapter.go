@@ -10,7 +10,7 @@ type UserGrpcInterface interface {
 	ResetPassword(ctx context.Context, resetPasswordRequest *gen.ResetPasswordRequest) (string, error)
 	GetByEmail(ctx context.Context, email string) (*gen.User, error)
 	GetById(ctx context.Context, userId string) (*gen.User, error)
-	UpdateVerificationStatus(ctx context.Context, userId string) (bool, error)
+	UpdateVerificationStatus(ctx context.Context, userId string, email string) (bool, error)
 }
 
 type BrokerInterface interface {

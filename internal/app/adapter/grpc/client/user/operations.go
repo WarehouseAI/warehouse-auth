@@ -57,8 +57,8 @@ func (c *UserGrpcClient) GetByEmail(ctx context.Context, email string) (*gen.Use
 	return resp, nil
 }
 
-func (c *UserGrpcClient) UpdateVerificationStatus(ctx context.Context, userId string) (bool, error) {
-	resp, err := c.conn.UpdateVerificationStatus(ctx, &gen.UpdateVerificationStatusRequest{UserId: userId})
+func (c *UserGrpcClient) UpdateVerificationStatus(ctx context.Context, userId, email string) (bool, error) {
+	resp, err := c.conn.UpdateVerificationStatus(ctx, &gen.UpdateVerificationStatusRequest{UserId: userId, Email: email})
 
 	if err != nil {
 		return false, e.NewHttpErrorByGrpcStatus(err)

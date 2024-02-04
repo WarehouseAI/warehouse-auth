@@ -68,7 +68,7 @@ func Register(
 		return nil, httpErr
 	}
 
-	verificationToken, createTokenErr := confirm.CreateAndStoreVerificationToken(userId, tokenRepository)
+	verificationToken, createTokenErr := confirm.CreateAndStoreVerificationToken(userId, req.Email, tokenRepository)
 
 	if createTokenErr != nil {
 		if brokerErr := broker.SendMessage("user_saga", userId); brokerErr != nil {
