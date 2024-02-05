@@ -2,7 +2,9 @@ package server
 
 import (
 	"auth-service/internal/app/adapter/broker"
-	d "auth-service/internal/app/dataservice/operations"
+	rt "auth-service/internal/app/repository/resetToken"
+	s "auth-service/internal/app/repository/session"
+	vt "auth-service/internal/app/repository/verificationToken"
 	h "auth-service/internal/app/server/handlers"
 	mw "auth-service/internal/app/server/middleware"
 	"fmt"
@@ -37,9 +39,9 @@ func Start(
 	port string,
 	userServiceAddr string,
 	allowedOrigins []string,
-	resetDB *d.ResetTokenDB,
-	verificationDB *d.VerificationTokenDB,
-	sessionDB *d.SessionDatabase,
+	resetDB *rt.Database,
+	verificationDB *vt.Database,
+	sessionDB *s.Database,
 	broker *broker.Broker,
 	logger *logrus.Logger,
 ) error {

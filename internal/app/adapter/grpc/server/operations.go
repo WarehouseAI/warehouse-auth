@@ -2,7 +2,8 @@ package server
 
 import (
 	"auth-service/internal/app/adapter"
-	"auth-service/internal/app/dataservice"
+	s "auth-service/internal/app/repository/session"
+	vt "auth-service/internal/app/repository/verificationToken"
 	"auth-service/internal/app/service"
 	"auth-service/internal/app/service/confirm"
 	"auth-service/internal/pkg/email"
@@ -16,8 +17,8 @@ import (
 
 type AuthGrpcServer struct {
 	gen.UnimplementedAuthServiceServer
-	SessionRepo dataservice.SessionInterface
-	TokenRepo   dataservice.VerificationTokenInterface
+	SessionRepo s.Repository
+	TokenRepo   vt.Repository
 	Broker      adapter.BrokerInterface
 }
 

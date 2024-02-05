@@ -2,8 +2,8 @@ package confirm
 
 import (
 	"auth-service/internal/app/adapter"
-	"auth-service/internal/app/dataservice"
 	m "auth-service/internal/app/model"
+	vt "auth-service/internal/app/repository/verificationToken"
 	e "auth-service/internal/pkg/errors/http"
 	"auth-service/internal/pkg/utils"
 	"context"
@@ -31,7 +31,7 @@ func validateConfirmRequest(request ConfirmRequest) error {
 	return nil
 }
 
-func CreateAndStoreVerificationToken(userId, userEmail string, tokenRepo dataservice.VerificationTokenInterface) (string, error) {
+func CreateAndStoreVerificationToken(userId, userEmail string, tokenRepo vt.Repository) (string, error) {
 	token, tokenHash, err := utils.GenerateAndHashToken(12)
 
 	if err != nil {
@@ -54,7 +54,7 @@ func CreateAndStoreVerificationToken(userId, userEmail string, tokenRepo dataser
 func ConfirmEmail(
 	request ConfirmRequest,
 	user adapter.UserGrpcInterface,
-	verificationToken dataservice.VerificationTokenInterface,
+	verificationToken vt.Repository,
 ) (*ConfirmResponse, error) {
 	if err := validateConfirmRequest(request); err != nil {
 		return nil, err

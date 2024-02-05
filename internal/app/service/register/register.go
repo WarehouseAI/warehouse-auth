@@ -2,7 +2,7 @@ package register
 
 import (
 	"auth-service/internal/app/adapter"
-	"auth-service/internal/app/dataservice"
+	vt "auth-service/internal/app/repository/verificationToken"
 	"auth-service/internal/app/service/confirm"
 	"auth-service/internal/pkg/email"
 	e "auth-service/internal/pkg/errors/http"
@@ -54,7 +54,7 @@ func validateRegisterRequest(req *RegisterRequest) error {
 func Register(
 	req *RegisterRequest,
 	user adapter.UserGrpcInterface,
-	tokenRepository dataservice.VerificationTokenInterface,
+	tokenRepository vt.Repository,
 	broker adapter.BrokerInterface,
 ) (*RegisterResponse, error) {
 	if err := validateRegisterRequest(req); err != nil {

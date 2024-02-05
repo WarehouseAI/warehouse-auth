@@ -2,8 +2,8 @@ package login
 
 import (
 	"auth-service/internal/app/adapter"
-	"auth-service/internal/app/dataservice"
 	"auth-service/internal/app/model"
+	s "auth-service/internal/app/repository/session"
 	e "auth-service/internal/pkg/errors/http"
 	"context"
 	"fmt"
@@ -29,7 +29,7 @@ func validateLoginRequest(req *LoginRequest) error {
 	return nil
 }
 
-func Login(req *LoginRequest, user adapter.UserGrpcInterface, session dataservice.SessionInterface) (*LoginResponse, *model.Session, error) {
+func Login(req *LoginRequest, user adapter.UserGrpcInterface, session s.Repository) (*LoginResponse, *model.Session, error) {
 	if err := validateLoginRequest(req); err != nil {
 		return nil, nil, err
 	}

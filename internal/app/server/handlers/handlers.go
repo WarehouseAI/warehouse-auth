@@ -3,7 +3,10 @@ package handlers
 import (
 	"auth-service/internal/app/adapter/broker"
 	"auth-service/internal/app/adapter/grpc/client/user"
-	d "auth-service/internal/app/dataservice/operations"
+	rt "auth-service/internal/app/repository/resetToken"
+	s "auth-service/internal/app/repository/session"
+	vt "auth-service/internal/app/repository/verificationToken"
+
 	"auth-service/internal/app/server/response"
 	"auth-service/internal/app/service"
 	"auth-service/internal/app/service/confirm"
@@ -38,9 +41,9 @@ import (
 // }
 
 type Handler struct {
-	ResetRepo        *d.ResetTokenDB        // reset tokens
-	VerificationRepo *d.VerificationTokenDB // verification tokens
-	SessionRepo      *d.SessionDatabase     // sessions repo
+	ResetRepo        *rt.Database // reset tokens
+	VerificationRepo *vt.Database // verification tokens
+	SessionRepo      *s.Database  // sessions repo
 	UserClient       *user.UserGrpcClient
 	Broker           *broker.Broker
 }
@@ -48,9 +51,9 @@ type Handler struct {
 // TODO: add error & logger middleware
 
 func NewHandlers(
-	resetRepo *d.ResetTokenDB,
-	verificationRepo *d.VerificationTokenDB,
-	sessionRepo *d.SessionDatabase,
+	resetRepo *rt.Database,
+	verificationRepo *vt.Database,
+	sessionRepo *s.Database,
 	userAddr string,
 	broker *broker.Broker,
 ) *Handler {

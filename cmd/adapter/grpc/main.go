@@ -3,7 +3,8 @@ package grpc
 import (
 	a "auth-service/internal/app/adapter"
 	"auth-service/internal/app/adapter/grpc/server"
-	d "auth-service/internal/app/dataservice"
+	s "auth-service/internal/app/repository/session"
+	vt "auth-service/internal/app/repository/verificationToken"
 	"auth-service/internal/pkg/protogen"
 	"fmt"
 	"net"
@@ -13,9 +14,9 @@ import (
 	"google.golang.org/grpc"
 )
 
-func Start(host string, sessionDB d.SessionInterface, tokenDB d.VerificationTokenInterface, broker a.BrokerInterface, logger *logrus.Logger) func() {
+func Start(host string, sessionDB s.Repository, verificationTokenDB vt.Repository, broker a.BrokerInterface, logger *logrus.Logger) func() {
 	grpc := grpc.NewServer()
-	server := newAuthGrpcServer(sessionDB, tokenDB, broker)
+	server := newAuthGrpcServer(sessionDB, verificationTokenDB, broker)
 	listener, err := net.Listen("tcp", host)
 
 	if err != nil {
@@ -35,7 +36,7 @@ func Start(host string, sessionDB d.SessionInterface, tokenDB d.VerificationToke
 	}
 }
 
-func newAuthGrpcServer(sessionDB d.SessionInterface, tokenDB d.VerificationTokenInterface, broker a.BrokerInterface) *server.AuthGrpcServer {
+func newAuthGrpcServer(sessionDB s.Repository, tokenDB vt.Repository, broker a.BrokerInterface) *server.AuthGrpcServer {
 	return &server.AuthGrpcServer{
 		SessionRepo: sessionDB,
 		TokenRepo:   tokenDB,

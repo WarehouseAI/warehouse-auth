@@ -2,8 +2,10 @@ package dataservice
 
 import (
 	"auth-service/configs"
-	d "auth-service/internal/app/dataservice/operations"
 	"auth-service/internal/app/model"
+	rt "auth-service/internal/app/repository/resetToken"
+	s "auth-service/internal/app/repository/session"
+	vt "auth-service/internal/app/repository/verificationToken"
 	"fmt"
 
 	"github.com/redis/go-redis/v9"
@@ -11,19 +13,19 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewSessionDatabase(config configs.Config) *d.SessionDatabase {
+func NewSessionDatabase(config configs.Config) *s.Database {
 	rClient := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%d", config.Redis.Host, config.Redis.Port),
 		Password: config.Redis.Password,
 		DB:       0,
 	})
 
-	return &d.SessionDatabase{
+	return &s.Database{
 		DB: rClient,
 	}
 }
 
-func NewSqlDatabase(config configs.Config) (*d.ResetTokenDB, *d.VerificationTokenDB) {
+func NewSqlDatabase(config configs.Config) (*rt.Database, *vt.Database) {
 	DSN := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=5432 sslmode=disable",
 		config.Postgres.Host,
 		config.Postgres.Username,
@@ -41,5 +43,5 @@ func NewSqlDatabase(config configs.Config) (*d.ResetTokenDB, *d.VerificationToke
 	db.AutoMigrate(&model.VerificationToken{})
 	db.AutoMigrate(&model.ResetToken{})
 
-	return &d.ResetTokenDB{DB: db}, &d.VerificationTokenDB{DB: db}
+	return &rt.Database{DB: db}, &vt.Database{DB: db}
 }

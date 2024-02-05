@@ -2,8 +2,8 @@ package service
 
 import (
 	"auth-service/internal/app/adapter"
-	"auth-service/internal/app/dataservice"
 	"auth-service/internal/app/model"
+	rt "auth-service/internal/app/repository/resetToken"
 	"auth-service/internal/pkg/email"
 	e "auth-service/internal/pkg/errors/http"
 	gen "auth-service/internal/pkg/protogen"
@@ -36,7 +36,7 @@ type ResetVerifyResponse struct {
 	UserId string `json:"user_id"`
 }
 
-func ConfirmResetToken(request *ResetConfirmRequest, resetTokenId string, user adapter.UserGrpcInterface, resetToken dataservice.ResetTokenInterface) (*ResetConfirmResponse, error) {
+func ConfirmResetToken(request *ResetConfirmRequest, resetTokenId string, user adapter.UserGrpcInterface, resetToken rt.Repository) (*ResetConfirmResponse, error) {
 	existResetToken, dbErr := resetToken.Get(map[string]interface{}{"id": resetTokenId})
 
 	if dbErr != nil {
@@ -62,7 +62,7 @@ func ConfirmResetToken(request *ResetConfirmRequest, resetTokenId string, user a
 	return &ResetConfirmResponse{UserId: resp}, nil
 }
 
-func VerifyResetCode(verificationCode string, resetTokenId string, resetToken dataservice.ResetTokenInterface) (*ResetVerifyResponse, error) {
+func VerifyResetCode(verificationCode string, resetTokenId string, resetToken rt.Repository) (*ResetVerifyResponse, error) {
 	existResetToken, err := resetToken.Get(map[string]interface{}{"id": resetTokenId})
 
 	if err != nil {
@@ -76,7 +76,7 @@ func VerifyResetCode(verificationCode string, resetTokenId string, resetToken da
 	return &ResetVerifyResponse{UserId: existResetToken.UserId.String()}, nil
 }
 
-func RequestResetToken(req ResetAttemptRequest, resetToken dataservice.ResetTokenInterface, user adapter.UserGrpcInterface, broker adapter.BrokerInterface) (*ResetAttemptResponse, error) {
+func RequestResetToken(req ResetAttemptRequest, resetToken rt.Repository, user adapter.UserGrpcInterface, broker adapter.BrokerInterface) (*ResetAttemptResponse, error) {
 	existUser, httpErr := user.GetByEmail(context.Background(), req.Email)
 
 	if httpErr != nil {
