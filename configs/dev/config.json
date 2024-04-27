@@ -1,0 +1,41 @@
+{
+  "mode": "dev",
+  "apis": {
+    "jwt": "jwtKey"
+  },
+  "timeouts": {
+    "request": 60,
+    "access_token": 60,
+    "refresh_token": 600,
+    "acc_cookie": 604800
+  },
+  "request_timeout": {
+    "request": "10s",
+    "auth": "5s"
+  },
+  "locale": 3,
+  "grpc": {
+    "host": "auth",
+    "port": 8010,
+    "user_addr": "user:8020"
+  },
+  "server": {
+    "port": 8001,
+    "allowed_origins": [
+      "http://localhost:3000",
+      "https://warehouse-ai-frontend.vercel.app",
+      "https://warehousai.com"
+    ]
+  },
+  "pgSource": "postgresql://auth:authpass@db-auth:5440/auth_db?sslmode=disable",
+  "rabbitmq": {
+    "port": 5672,
+    "user": "rmq",
+    "host": "rabbitmq",
+    "password": "rmqpass",
+    "queues": {
+      "mail": "mail",
+      "user": "user_saga"
+    }
+  }
+}

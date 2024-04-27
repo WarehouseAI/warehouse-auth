@@ -1,52 +1,32 @@
-syntax = 'proto3';
-option go_package = "./protogen";
+syntax = "proto3";
+option go_package = "./warehousepb";
 
-message User {
-  string id = 1;
-  string username = 2;
-  string firstname = 3;
-  string lastname = 4;
-  string picture = 5;
-  string email = 6;
-  bool via_google = 7 [json_name="via_google"];
-  bool verified = 8;
-  bool is_developer = 9;
-  string created_at = 10 [json_name="created_at"];
-  string updated_at = 11 [json_name="updated_at"];
-  string password = 12;
-}
+import "models.proto";
 
-// ---------- Create user ----------
-message CreateUserMsg {
+// Реквест к пользовательскому микросервису на создание пользователя
+message CreateUserRequest {
   string username = 1;
   string firstname = 2;
   string lastname = 3;
   string password = 4;
   string email = 5;
-  bool via_google = 6;
 }
-
-message CreateUserResponse {
-  string user_id = 1;
-}
-
-// ---------- Get user ----------
-message GetUserByEmailMsg {
+// Реквест на получение пользователя по почте
+message GetUserByEmailRequest {
   string email = 1;
 }
-
-message GetUserByIdMsg {
-  string user_id = 1;
+// Реквест на получение пользователя по логину
+message GetUserByLoginRequest {
+  string username = 1;
 }
-
-// ---------- Reset password ----------
+// Реквест на получение пользователя по айди
+message GetUserByIdRequest {
+  string id = 1;
+}
+// Реквест на сброс пароля
 message ResetPasswordRequest {
   string user_id = 1;
   string password = 2;
-}
-
-message ResetPasswordResponse {
-  string user_id = 1;
 }
 
 // ---------- Update user status ----------
@@ -55,27 +35,11 @@ message UpdateVerificationStatusRequest {
   string email = 2;
 }
 
-message UpdateVerificationStatusResponse {
-  bool verified = 1;
-}
-
-// ---------- Upload user image ----------
-message UploadImageRequest {
-  bytes chunk = 1;
-  string user_id = 2;
-  string image_type = 3;
-}
-
-message UploadImageResponse {
-  uint32 size = 1;
-  string id = 2;
-}
-
 service UserService {
-  rpc GetUserByEmail(GetUserByEmailMsg) returns (User);
-  rpc GetUserById(GetUserByIdMsg) returns (User);
-  rpc CreateUser(CreateUserMsg) returns (CreateUserResponse);
-  rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse);
-  rpc UploadUserImage(stream UploadImageRequest) returns (UploadImageResponse);
-  rpc UpdateVerificationStatus(UpdateVerificationStatusRequest) returns (UpdateVerificationStatusResponse);
+  rpc GetUserByEmail(GetUserByEmailRequest) returns (User);
+  rpc GetUserByLogin(GetUserByLoginRequest) returns (User);
+  rpc GetUserById(GetUserByIdRequest) returns (User);
+  rpc CreateUser(CreateUserRequest) returns (User);
+  rpc ResetPassword(ResetPasswordRequest) returns (SuccessResponse);
+  rpc UpdateVerificationStatus(UpdateVerificationStatusRequest) returns (SuccessResponse);
 }

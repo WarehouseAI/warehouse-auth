@@ -1,29 +1,13 @@
-syntax = 'proto3';
-option go_package = "./protogen";
+syntax = "proto3";
+option go_package = "./warehousepb";
 
-// REQ's and RES's
+import "models.proto";
 
-message AuthenticationRequest {
-  string session_id = 1;
+message AuthRequest {
+  string access_token = 1;
 }
 
-message AuthenticationResponse {
-  string user_id = 1;
-  string session_id = 2;
-}
-
-message VerifyEmailRequest {
-  string user_id = 1;
-  string user_firstname = 2;
-  string user_email = 3;
-}
-
-message VerifyEmailResponse {
-  string user_id = 2;
-}
-
-service AuthService {
-  rpc Authenticate(AuthenticationRequest) returns (AuthenticationResponse);
-  rpc SendVerificationEmail(VerifyEmailRequest) returns (VerifyEmailResponse);
+message AuthResponse {
+  User user = 1;
 }
 
