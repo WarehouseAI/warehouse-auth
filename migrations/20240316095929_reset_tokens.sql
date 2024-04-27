@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 SELECT 'up SQL query';
 -- +goose StatementEnd
-CREATE TABLE public.reset_tokens (
+CREATE TABLE IF NOT EXISTS public.reset_tokens (
   id BIGINT PRIMARY KEY,
   user_id public.xid NOT NULL UNIQUE,
   token VARCHAR(16) NOT NULL,

@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 SELECT 'up SQL query';
 -- +goose StatementEnd
-CREATE TABLE public.admin_tokens (
+CREATE TABLE IF NOT EXISTS public.admin_tokens (
   user_id public.xid NOT NULL,
   number BIGINT NOT NULL,
   purpose INTEGER NOT NULL,
