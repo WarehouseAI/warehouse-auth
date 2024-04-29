@@ -11,7 +11,6 @@ COPY . .
 RUN go build /usr/src/cmd/warehouse/main.go
 
 FROM alpine:3.19.1
-RUN apk -y update && apk --no-cache add --no-check-certificate ca-certificates && update-ca-certificates
 
 WORKDIR /usr/src/app
 ARG env
