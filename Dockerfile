@@ -8,7 +8,7 @@ COPY go.sum go.sum
 RUN go mod download
 
 COPY . .
-RUN go build /usr/src/cmd/warehouse/main.go
+RUN go build /usr/src/backend/cmd/warehouse/main.go
 
 FROM alpine:3.19.1
 
