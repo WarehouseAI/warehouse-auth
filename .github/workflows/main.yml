@@ -33,7 +33,7 @@ jobs:
     env:
       IMG_NAME: '${{github.repository}}'
       IMG_PROJECT: 'warehouse-backend'
-      IMG_REGISTRY: 'portainer.warehousai.com'
+      IMG_REGISTRY: 'registry.warehousai.com'
 
     steps:
       - uses: actions/checkout@v3
