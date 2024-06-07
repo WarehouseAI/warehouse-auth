@@ -1,5 +1,5 @@
 proto_dir="./proto"
-proto_out="./internal/protogen"
+proto_out="./internal/warehousepb"
 
 if [ ! -d "$proto_dir" ]; then
   echo "Directory '$proto_dir' does not exist"
