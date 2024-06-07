@@ -20,11 +20,11 @@ type GrpcServer struct {
 }
 
 func (s *GrpcServer) Authenticate(ctx context.Context, req *warehousepb.AuthRequest) (*warehousepb.AuthResponse, error) {
-	if req == nil || req.AccessToken == "" {
+	if req == nil || req.Token == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "Empty request data")
 	}
 
-	acc, _, err := s.jwtSvc.Auth(ctx, req.AccessToken, domain.PurposeAccess)
+	acc, _, err := s.jwtSvc.Auth(ctx, req.Token, domain.AuthPurpose(req.Purpose))
 
 	if err != nil {
 		return nil, handler_converters.MakeStatusFromErrorsError(err)

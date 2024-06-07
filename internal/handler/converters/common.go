@@ -1,10 +1,8 @@
 package converters
 
 import (
-	"auth-service/internal/domain"
 	"auth-service/internal/handler/models"
 	"auth-service/internal/pkg/errors"
-	"auth-service/internal/warehousepb"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -31,11 +29,4 @@ func MakeStatusFromErrorsError(err *errors.Error) error {
 	}
 
 	return status.Errorf(codes.Internal, details)
-}
-
-func NewWarehousepbResult(resp *warehousepb.Response, accs []*domain.Account) *models.Result {
-	return &models.Result{
-		Resp:     resp,
-		Accounts: accs,
-	}
 }

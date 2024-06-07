@@ -4,14 +4,14 @@ var (
 	Roles = []Role{RoleAdmin, RoleUser}
 )
 
-type Role int32
+type Role int64
 
 const (
 	RoleAdmin Role = iota
 	RoleUser
 )
 
-type AuthPurpose int32
+type AuthPurpose int64
 
 const (
 	PurposeAccess = AuthPurpose(iota)
