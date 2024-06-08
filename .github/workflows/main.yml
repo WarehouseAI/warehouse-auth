@@ -32,7 +32,7 @@ jobs:
     needs: ['build_backend']
     env:
       IMG_NAME: '${{github.repository}}'
-      IMG_PROJECT: 'warehouse-backend'
+      IMG_PROJECT: 'warehouse-auth'
       IMG_REGISTRY: 'registry.warehousai.com'
 
     steps:
