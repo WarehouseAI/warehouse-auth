@@ -10,6 +10,7 @@ message AuthRequest {
 
 message AuthResponse {
   User user = 1;
+  int64 number = 2;
 }
 
 service Auth {

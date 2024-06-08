@@ -24,11 +24,11 @@ func (s *GrpcServer) Authenticate(ctx context.Context, req *warehousepb.AuthRequ
 		return nil, status.Errorf(codes.InvalidArgument, "Empty request data")
 	}
 
-	acc, _, err := s.jwtSvc.Auth(ctx, req.Token, domain.AuthPurpose(req.Purpose))
+	acc, num, err := s.jwtSvc.Auth(ctx, req.Token, domain.AuthPurpose(req.Purpose))
 
 	if err != nil {
 		return nil, handler_converters.MakeStatusFromErrorsError(err)
 	}
 
-	return &warehousepb.AuthResponse{User: converters.DomainUser2ProtoAccount(acc)}, nil
+	return &warehousepb.AuthResponse{User: converters.DomainUser2ProtoAccount(acc), Number: num}, nil
 }
