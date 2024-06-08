@@ -31,8 +31,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs: ['build_backend']
     env:
-      IMG_NAME: '${{github.repository}}'
-      IMG_PROJECT: 'warehouse-auth'
+      IMG_NAME: 'warehouse-auth'
       IMG_REGISTRY: 'registry.warehousai.com'
 
     steps:
@@ -61,5 +60,5 @@ jobs:
 
           file: ./Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
-          tags: '${{env.IMG_REGISTRY}}/${{env.IMG_PROJECT}}/${{ env.IMG_NAME }}:latest'
+          tags: '${{env.IMG_REGISTRY}}/${{ env.IMG_NAME }}:latest'
           labels: ${{ steps.metadata.outputs.labels }}
