@@ -8,7 +8,7 @@ message CreateUserRequest {
   string username = 1;
   string firstname = 2;
   string lastname = 3;
-  string password = 4;
+  string hash = 4;
   string email = 5;
 }
 // Реквест на получение пользователя по почте

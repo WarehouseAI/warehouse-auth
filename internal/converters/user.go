@@ -11,7 +11,7 @@ func DomainCreateUser2ProtoCreateUser(request models.CreateRequestData) *warehou
 		Username:  request.Username,
 		Firstname: request.Firstname,
 		Lastname:  request.Lastname,
-		Password:  request.Password,
+		Hash:      request.Password,
 		Email:     request.Email,
 	}
 }

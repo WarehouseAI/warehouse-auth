@@ -20,6 +20,7 @@ import (
 	"context"
 	"time"
 
+	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -291,6 +292,12 @@ func (s *service) Register(
 
 		return "", errors.AuthUserAlreadyExists
 	}
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(reqData.Password), 12)
+	if err != nil {
+		return "", s.log.ServiceError(errors.WD(errors.InternalError, err))
+	}
+	reqData.Password = string(hash)
 
 	acc, err := s.userAdapter.CreateUser(ctx, reqData)
 	if err != nil {
