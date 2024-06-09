@@ -1,10 +1,11 @@
 package mail
 
 import (
-	"auth-service/internal/broker"
-	"auth-service/internal/domain"
 	"context"
 	"encoding/json"
+
+	"github.com/warehouse/auth-service/internal/broker"
+	"github.com/warehouse/auth-service/internal/domain"
 
 	rmq "github.com/rabbitmq/amqp091-go"
 )

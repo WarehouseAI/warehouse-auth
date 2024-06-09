@@ -1,10 +1,11 @@
 package reset_token
 
 import (
-	"auth-service/internal/pkg/errors/repository_errors"
-	"auth-service/internal/repository/models"
 	"context"
 	"fmt"
+
+	"github.com/warehouse/auth-service/internal/pkg/errors/repository_errors"
+	"github.com/warehouse/auth-service/internal/repository/models"
 
 	"github.com/jmoiron/sqlx"
 )

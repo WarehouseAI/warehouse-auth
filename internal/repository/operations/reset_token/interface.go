@@ -1,9 +1,10 @@
 package reset_token
 
 import (
-	"auth-service/internal/repository/models"
-	"auth-service/internal/repository/operations/transactions"
 	"context"
+
+	"github.com/warehouse/auth-service/internal/repository/models"
+	"github.com/warehouse/auth-service/internal/repository/operations/transactions"
 )
 
 type Repository interface {

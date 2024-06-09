@@ -1,11 +1,12 @@
 package middlewares
 
 import (
-	"auth-service/internal/config"
-	"auth-service/internal/domain"
-	"auth-service/internal/pkg/logger"
-	"auth-service/internal/service/jwt"
 	"net/http"
+
+	"github.com/warehouse/auth-service/internal/config"
+	"github.com/warehouse/auth-service/internal/domain"
+	"github.com/warehouse/auth-service/internal/pkg/logger"
+	"github.com/warehouse/auth-service/internal/service/jwt"
 )
 
 const (

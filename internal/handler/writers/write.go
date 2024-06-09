@@ -1,10 +1,11 @@
 package writers
 
 import (
-	"auth-service/internal/domain"
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/warehouse/auth-service/internal/domain"
 
 	"google.golang.org/protobuf/proto"
 )

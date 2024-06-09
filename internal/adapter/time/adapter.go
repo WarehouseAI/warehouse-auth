@@ -1,8 +1,9 @@
 package time
 
 import (
-	"auth-service/internal/pkg/consts"
 	"time"
+
+	"github.com/warehouse/auth-service/internal/pkg/consts"
 )
 
 type (

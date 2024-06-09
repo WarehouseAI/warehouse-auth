@@ -1,12 +1,13 @@
 package middlewares
 
 import (
-	"auth-service/internal/handler/converters"
-	"auth-service/internal/handler/writers"
-	"auth-service/internal/pkg/errors"
 	"context"
 	"net/http"
 	"time"
+
+	"github.com/warehouse/auth-service/internal/handler/converters"
+	"github.com/warehouse/auth-service/internal/handler/writers"
+	"github.com/warehouse/auth-service/internal/pkg/errors"
 )
 
 func (m *middleware) acquireWorker(ctx context.Context) *errors.Error {

@@ -1,10 +1,11 @@
 package jwt
 
 import (
-	"auth-service/internal/domain"
-	"auth-service/internal/repository/models"
-	"auth-service/internal/repository/operations/transactions"
 	"context"
+
+	"github.com/warehouse/auth-service/internal/domain"
+	"github.com/warehouse/auth-service/internal/repository/models"
+	"github.com/warehouse/auth-service/internal/repository/operations/transactions"
 )
 
 type Repository interface {

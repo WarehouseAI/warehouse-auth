@@ -1,13 +1,14 @@
 package middlewares
 
 import (
-	"auth-service/internal/domain"
-	"auth-service/internal/handler/converters"
-	"auth-service/internal/handler/writers"
 	"context"
 	"fmt"
 	"net/http"
 	"strings"
+
+	"github.com/warehouse/auth-service/internal/domain"
+	"github.com/warehouse/auth-service/internal/handler/converters"
+	"github.com/warehouse/auth-service/internal/handler/writers"
 )
 
 func (m *middleware) JwtAuthMiddleware(purpose domain.AuthPurpose) func(http.Handler) http.Handler {

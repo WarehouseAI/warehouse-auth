@@ -1,24 +1,25 @@
 package auth
 
 import (
-	mailAdpt "auth-service/internal/adapter/mail"
-	timeAdpt "auth-service/internal/adapter/time"
-	userAdpt "auth-service/internal/adapter/user"
-	"auth-service/internal/config"
-	"auth-service/internal/domain"
-	"auth-service/internal/handler/models"
-	"auth-service/internal/pkg/errors"
-	"auth-service/internal/pkg/logger"
-	"auth-service/internal/pkg/utils/encode"
-	"auth-service/internal/pkg/utils/str"
-	rep_converters "auth-service/internal/repository/converters"
-	jwtRepo "auth-service/internal/repository/operations/jwt"
-	"auth-service/internal/repository/operations/reset_token"
-	"auth-service/internal/repository/operations/transactions"
-	"auth-service/internal/repository/operations/verification_token"
-	jwtSvc "auth-service/internal/service/jwt"
 	"context"
 	"time"
+
+	mailAdpt "github.com/warehouse/auth-service/internal/adapter/mail"
+	timeAdpt "github.com/warehouse/auth-service/internal/adapter/time"
+	userAdpt "github.com/warehouse/auth-service/internal/adapter/user"
+	"github.com/warehouse/auth-service/internal/config"
+	"github.com/warehouse/auth-service/internal/domain"
+	"github.com/warehouse/auth-service/internal/handler/models"
+	"github.com/warehouse/auth-service/internal/pkg/errors"
+	"github.com/warehouse/auth-service/internal/pkg/logger"
+	"github.com/warehouse/auth-service/internal/pkg/utils/encode"
+	"github.com/warehouse/auth-service/internal/pkg/utils/str"
+	rep_converters "github.com/warehouse/auth-service/internal/repository/converters"
+	jwtRepo "github.com/warehouse/auth-service/internal/repository/operations/jwt"
+	"github.com/warehouse/auth-service/internal/repository/operations/reset_token"
+	"github.com/warehouse/auth-service/internal/repository/operations/transactions"
+	"github.com/warehouse/auth-service/internal/repository/operations/verification_token"
+	jwtSvc "github.com/warehouse/auth-service/internal/service/jwt"
 
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
@@ -323,6 +324,10 @@ func (s *service) Register(
 	)
 	if err != nil {
 		return "", s.log.ServiceDatabaseError(err)
+	}
+
+	if err := tx.Commit(); err != nil {
+		return "", s.log.ServiceTxError(err)
 	}
 
 	email := domain.EmailMessage{

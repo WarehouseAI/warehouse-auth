@@ -1,8 +1,8 @@
 package converters
 
 import (
-	"auth-service/internal/handler/models"
-	"auth-service/internal/pkg/errors"
+	"github.com/warehouse/auth-service/internal/handler/models"
+	"github.com/warehouse/auth-service/internal/pkg/errors"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

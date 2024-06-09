@@ -1,9 +1,10 @@
 package postgres
 
 import (
-	"auth-service/internal/db"
 	"flag"
 	"log"
+
+	"github.com/warehouse/auth-service/internal/db"
 )
 
 func main() {

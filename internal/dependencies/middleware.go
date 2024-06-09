@@ -1,6 +1,6 @@
 package dependencies
 
-import "auth-service/internal/handler/middlewares"
+import "github.com/warehouse/auth-service/internal/handler/middlewares"
 
 func (d *dependencies) HandlerMiddleware() middlewares.Middleware {
 	if d.handlerMiddleware == nil {

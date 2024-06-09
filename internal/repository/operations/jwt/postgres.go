@@ -1,16 +1,17 @@
 package jwt
 
 import (
-	"auth-service/internal/db"
-	"auth-service/internal/domain"
-	"auth-service/internal/pkg/errors"
-	"auth-service/internal/pkg/errors/repository_errors"
-	"auth-service/internal/pkg/logger"
-	"auth-service/internal/repository/models"
-	"auth-service/internal/repository/operations/transactions"
 	"context"
 	"database/sql"
 	"fmt"
+
+	"github.com/warehouse/auth-service/internal/db"
+	"github.com/warehouse/auth-service/internal/domain"
+	"github.com/warehouse/auth-service/internal/pkg/errors"
+	"github.com/warehouse/auth-service/internal/pkg/errors/repository_errors"
+	"github.com/warehouse/auth-service/internal/pkg/logger"
+	"github.com/warehouse/auth-service/internal/repository/models"
+	"github.com/warehouse/auth-service/internal/repository/operations/transactions"
 
 	"github.com/jmoiron/sqlx"
 )

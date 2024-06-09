@@ -1,9 +1,9 @@
 package converters
 
 import (
-	"auth-service/internal/domain"
-	"auth-service/internal/handler/models"
-	"auth-service/internal/warehousepb"
+	"github.com/warehouse/auth-service/internal/domain"
+	"github.com/warehouse/auth-service/internal/handler/models"
+	"github.com/warehouse/auth-service/internal/warehousepb"
 )
 
 func DomainCreateUser2ProtoCreateUser(request models.CreateRequestData) *warehousepb.CreateUserRequest {

@@ -1,9 +1,10 @@
 package random
 
 import (
-	"auth-service/internal/pkg/utils/str"
 	"math/rand"
 	"time"
+
+	"github.com/warehouse/auth-service/internal/pkg/utils/str"
 )
 
 type (

@@ -1,8 +1,8 @@
 package dependencies
 
 import (
-	"auth-service/internal/service/auth"
-	"auth-service/internal/service/jwt"
+	"github.com/warehouse/auth-service/internal/service/auth"
+	"github.com/warehouse/auth-service/internal/service/jwt"
 )
 
 func (d *dependencies) AuthService() auth.Service {

@@ -1,10 +1,10 @@
 package dependencies
 
 import (
-	"auth-service/internal/repository/operations/jwt"
-	"auth-service/internal/repository/operations/reset_token"
-	"auth-service/internal/repository/operations/transactions"
-	"auth-service/internal/repository/operations/verification_token"
+	"github.com/warehouse/auth-service/internal/repository/operations/jwt"
+	"github.com/warehouse/auth-service/internal/repository/operations/reset_token"
+	"github.com/warehouse/auth-service/internal/repository/operations/transactions"
+	"github.com/warehouse/auth-service/internal/repository/operations/verification_token"
 )
 
 func (d *dependencies) PgxTransactionRepo() transactions.Repository {

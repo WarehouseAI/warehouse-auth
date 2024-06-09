@@ -1,6 +1,6 @@
 package app
 
-import "auth-service/internal/dependencies"
+import "github.com/warehouse/auth-service/internal/dependencies"
 
 type (
 	Application interface {
@@ -24,8 +24,11 @@ func NewApplication(cfgPath string) Application {
 }
 
 func (app *application) Run() {
-	appServer := app.deps.AppServer()
-	appServer.Start()
+	httpServer := app.deps.HttpServer()
+	httpServer.Start()
+
+	grpcServer := app.deps.GrpcServer()
+	grpcServer.Start()
 
 	app.deps.WaitForInterrupr() // программа будет "стоять" тут пока не придет системный сигнал
 	app.deps.Close()

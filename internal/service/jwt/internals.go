@@ -1,17 +1,18 @@
 package jwt
 
 import (
-	"auth-service/internal/domain"
-	"auth-service/internal/pkg/errors"
-	"auth-service/internal/pkg/errors/service_errors"
-	"auth-service/internal/repository/models"
-	"auth-service/internal/repository/operations/transactions"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/warehouse/auth-service/internal/domain"
+	"github.com/warehouse/auth-service/internal/pkg/errors"
+	"github.com/warehouse/auth-service/internal/pkg/errors/service_errors"
+	"github.com/warehouse/auth-service/internal/repository/models"
+	"github.com/warehouse/auth-service/internal/repository/operations/transactions"
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -82,7 +83,7 @@ func (s *service) checkToken(
 		return domain.Account{}, 0, errors.WD(service_errors.DatabaseError, e)
 	}
 
-	// TODO: добавить подтяг данных пользователя 
+	// TODO: добавить подтяг данных пользователя
 	return domain.Account{
 		Role: domain.Role(role),
 		Id:   user_id,

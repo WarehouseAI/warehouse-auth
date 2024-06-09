@@ -1,26 +1,28 @@
 package dependencies
 
 import (
-	mailAdpt "auth-service/internal/adapter/mail"
-	randomAdpt "auth-service/internal/adapter/random"
-	timeAdpt "auth-service/internal/adapter/time"
-	userAdpt "auth-service/internal/adapter/user"
-	"auth-service/internal/broker"
-	"auth-service/internal/config"
-	"auth-service/internal/db"
-	"auth-service/internal/handler/http"
-	"auth-service/internal/handler/middlewares"
-	"auth-service/internal/pkg/logger"
-	jwtRepo "auth-service/internal/repository/operations/jwt"
-	"auth-service/internal/repository/operations/reset_token"
-	transactionsRepo "auth-service/internal/repository/operations/transactions"
-	"auth-service/internal/repository/operations/verification_token"
-	"auth-service/internal/server"
-	authSvc "auth-service/internal/service/auth"
-	jwtSvc "auth-service/internal/service/jwt"
 	"os"
 	"os/signal"
 	"syscall"
+
+	mailAdpt "github.com/warehouse/auth-service/internal/adapter/mail"
+	randomAdpt "github.com/warehouse/auth-service/internal/adapter/random"
+	timeAdpt "github.com/warehouse/auth-service/internal/adapter/time"
+	userAdpt "github.com/warehouse/auth-service/internal/adapter/user"
+	"github.com/warehouse/auth-service/internal/broker"
+	"github.com/warehouse/auth-service/internal/config"
+	"github.com/warehouse/auth-service/internal/db"
+	"github.com/warehouse/auth-service/internal/handler/grpc"
+	"github.com/warehouse/auth-service/internal/handler/http"
+	"github.com/warehouse/auth-service/internal/handler/middlewares"
+	"github.com/warehouse/auth-service/internal/pkg/logger"
+	jwtRepo "github.com/warehouse/auth-service/internal/repository/operations/jwt"
+	"github.com/warehouse/auth-service/internal/repository/operations/reset_token"
+	transactionsRepo "github.com/warehouse/auth-service/internal/repository/operations/transactions"
+	"github.com/warehouse/auth-service/internal/repository/operations/verification_token"
+	"github.com/warehouse/auth-service/internal/server"
+	authSvc "github.com/warehouse/auth-service/internal/service/auth"
+	jwtSvc "github.com/warehouse/auth-service/internal/service/jwt"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -33,7 +35,8 @@ type (
 		Internal() dependencies
 		WaitForInterrupr()
 
-		AppServer() server.Server
+		HttpServer() server.Server
+		GrpcServer() server.Server
 	}
 
 	dependencies struct {
@@ -45,7 +48,8 @@ type (
 		psqlClient   *db.PostgresClient
 		rabbitClient *broker.RabbitClient
 
-		authHandler http.Handler
+		authHandler     http.Handler
+		authGrpcHandler *grpc.AuthHandler
 
 		authService authSvc.Service
 		jwtService  jwtSvc.Service
@@ -60,7 +64,8 @@ type (
 		userAdapter   userAdpt.Adapter
 		mailAdapter   mailAdpt.Adapter
 
-		appServer server.Server
+		httpServer server.Server
+		grpcServer server.Server
 
 		shutdownChannel chan os.Signal
 		closeCallbacks  []func()
@@ -127,11 +132,11 @@ func (d *dependencies) WarehouseJsonRequestHandler() http.WarehouseRequestHandle
 	return d.warehouseRequestHandler
 }
 
-func (d *dependencies) AppServer() server.Server {
-	if d.appServer == nil {
+func (d *dependencies) HttpServer() server.Server {
+	if d.httpServer == nil {
 		var err error
 		msg := "initialize app server"
-		if d.appServer, err = server.NewAppServer(
+		if d.httpServer, err = server.NewHttpServer(
 			d.log,
 			d.cfg.Server,
 			d.HandlerMiddleware(),
@@ -142,14 +147,37 @@ func (d *dependencies) AppServer() server.Server {
 
 		d.closeCallbacks = append(d.closeCallbacks, func() {
 			msg := "shutting down app server"
-			if err := d.appServer.Stop(); err != nil {
+			if err := d.httpServer.Stop(); err != nil {
 				d.log.Zap().Warn(msg, zap.Error(err))
 				return
 			}
 			d.log.Zap().Info(msg)
 		})
 	}
-	return d.appServer
+	return d.httpServer
+}
+
+func (d *dependencies) GrpcServer() server.Server {
+	if d.grpcServer == nil {
+		var err error
+		msg := "initialize grpc server"
+		if d.grpcServer, err = server.NewGrpcServer(
+			d.log,
+			*d.cfg,
+			d.AuthGrpcHandler(),
+		); err != nil {
+			d.log.Zap().Panic(msg, zap.Error(err))
+		}
+
+		d.closeCallbacks = append(d.closeCallbacks, func() {
+			msg := "shutting down grpc server"
+			if err := d.grpcServer.Stop(); err != nil {
+				d.log.Zap().Warn(msg, zap.Error(err))
+			}
+			d.log.Zap().Info(msg)
+		})
+	}
+	return d.grpcServer
 }
 
 func (d *dependencies) WaitForInterrupr() {

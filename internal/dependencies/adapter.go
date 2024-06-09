@@ -1,10 +1,10 @@
 package dependencies
 
 import (
-	"auth-service/internal/adapter/mail"
-	"auth-service/internal/adapter/random"
-	"auth-service/internal/adapter/time"
-	"auth-service/internal/adapter/user"
+	"github.com/warehouse/auth-service/internal/adapter/mail"
+	"github.com/warehouse/auth-service/internal/adapter/random"
+	"github.com/warehouse/auth-service/internal/adapter/time"
+	"github.com/warehouse/auth-service/internal/adapter/user"
 
 	"go.uber.org/zap"
 )

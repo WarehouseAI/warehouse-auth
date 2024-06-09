@@ -1,9 +1,9 @@
 package rep_converters
 
 import (
-	"auth-service/internal/domain"
-	wh_converters "auth-service/internal/pkg/utils/converters"
-	"auth-service/internal/repository/models"
+	"github.com/warehouse/auth-service/internal/domain"
+	wh_converters "github.com/warehouse/auth-service/internal/pkg/utils/converters"
+	"github.com/warehouse/auth-service/internal/repository/models"
 )
 
 func DomainVerificationToken2ModelVerificationToken(t domain.VerificationTokenInfo) models.VerificationToken {

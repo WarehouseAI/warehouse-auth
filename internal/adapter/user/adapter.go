@@ -1,12 +1,13 @@
 package user
 
 import (
-	"auth-service/internal/config"
-	"auth-service/internal/converters"
-	"auth-service/internal/domain"
-	"auth-service/internal/handler/models"
-	"auth-service/internal/warehousepb"
 	"context"
+
+	"github.com/warehouse/auth-service/internal/config"
+	"github.com/warehouse/auth-service/internal/converters"
+	"github.com/warehouse/auth-service/internal/domain"
+	"github.com/warehouse/auth-service/internal/handler/models"
+	"github.com/warehouse/auth-service/internal/warehousepb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

@@ -1,8 +1,9 @@
 package transactions
 
 import (
-	"auth-service/internal/db"
 	"context"
+
+	"github.com/warehouse/auth-service/internal/db"
 
 	"github.com/jmoiron/sqlx"
 )

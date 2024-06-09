@@ -1,8 +1,9 @@
 package errors
 
 import (
-	wh_converters "auth-service/internal/pkg/utils/converters"
 	"errors"
+
+	wh_converters "github.com/warehouse/auth-service/internal/pkg/utils/converters"
 )
 
 type Error struct {

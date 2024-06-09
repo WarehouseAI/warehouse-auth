@@ -1,16 +1,17 @@
 package server
 
 import (
-	"auth-service/internal/config"
-	internalHttp "auth-service/internal/handler/http"
-	"auth-service/internal/handler/middlewares"
-	"auth-service/internal/pkg/logger"
 	"context"
 	"fmt"
 	"net"
 	"net/http"
 	"sync"
 	"time"
+
+	"github.com/warehouse/auth-service/internal/config"
+	internalHttp "github.com/warehouse/auth-service/internal/handler/http"
+	"github.com/warehouse/auth-service/internal/handler/middlewares"
+	"github.com/warehouse/auth-service/internal/pkg/logger"
 
 	"github.com/gorilla/mux"
 	"go.uber.org/zap"
@@ -54,7 +55,7 @@ func (a *appServer) Stop() error {
 	return nil
 }
 
-func NewAppServer(
+func NewHttpServer(
 	log logger.Logger,
 	cfg config.Server,
 

@@ -1,17 +1,18 @@
 package jwt
 
 import (
-	randomAdpt "auth-service/internal/adapter/random"
-	timeAdpt "auth-service/internal/adapter/time"
-	"auth-service/internal/config"
-	"auth-service/internal/domain"
-	"auth-service/internal/pkg/errors"
-	"auth-service/internal/pkg/logger"
-	jwtRepo "auth-service/internal/repository/operations/jwt"
-	"auth-service/internal/repository/operations/transactions"
 	"context"
 	"sync"
 	"time"
+
+	randomAdpt "github.com/warehouse/auth-service/internal/adapter/random"
+	timeAdpt "github.com/warehouse/auth-service/internal/adapter/time"
+	"github.com/warehouse/auth-service/internal/config"
+	"github.com/warehouse/auth-service/internal/domain"
+	"github.com/warehouse/auth-service/internal/pkg/errors"
+	"github.com/warehouse/auth-service/internal/pkg/logger"
+	jwtRepo "github.com/warehouse/auth-service/internal/repository/operations/jwt"
+	"github.com/warehouse/auth-service/internal/repository/operations/transactions"
 )
 
 type (

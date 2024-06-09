@@ -1,6 +1,6 @@
 package models
 
-import "auth-service/internal/domain"
+import "github.com/warehouse/auth-service/internal/domain"
 
 type (
 	LoginRequestData struct {

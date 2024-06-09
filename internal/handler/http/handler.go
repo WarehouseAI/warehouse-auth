@@ -1,17 +1,18 @@
 package http
 
 import (
-	"auth-service/internal/domain"
-	"auth-service/internal/handler/converters"
-	"auth-service/internal/handler/models"
-	"auth-service/internal/handler/writers"
-	"auth-service/internal/pkg/errors"
-	"auth-service/internal/pkg/logger"
 	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/warehouse/auth-service/internal/domain"
+	"github.com/warehouse/auth-service/internal/handler/converters"
+	"github.com/warehouse/auth-service/internal/handler/models"
+	"github.com/warehouse/auth-service/internal/handler/writers"
+	"github.com/warehouse/auth-service/internal/pkg/errors"
+	"github.com/warehouse/auth-service/internal/pkg/logger"
 
 	"github.com/gorilla/mux"
 	"go.uber.org/zap"

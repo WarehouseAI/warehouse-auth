@@ -1,18 +1,19 @@
 package http
 
 import (
-	timeAdpt "auth-service/internal/adapter/time"
-	userAdpt "auth-service/internal/adapter/user"
-	"auth-service/internal/config"
-	"auth-service/internal/domain"
-	"auth-service/internal/handler/middlewares"
-	"auth-service/internal/handler/models"
-	"auth-service/internal/pkg/errors"
-	"auth-service/internal/service/auth"
-	"auth-service/internal/service/jwt"
 	"context"
 	"encoding/json"
 	"net/http"
+
+	timeAdpt "github.com/warehouse/auth-service/internal/adapter/time"
+	userAdpt "github.com/warehouse/auth-service/internal/adapter/user"
+	"github.com/warehouse/auth-service/internal/config"
+	"github.com/warehouse/auth-service/internal/domain"
+	"github.com/warehouse/auth-service/internal/handler/middlewares"
+	"github.com/warehouse/auth-service/internal/handler/models"
+	"github.com/warehouse/auth-service/internal/pkg/errors"
+	"github.com/warehouse/auth-service/internal/service/auth"
+	"github.com/warehouse/auth-service/internal/service/jwt"
 
 	"github.com/gorilla/mux"
 )

@@ -1,8 +1,8 @@
 package dependencies
 
 import (
-	"auth-service/internal/broker"
-	"auth-service/internal/db"
+	"github.com/warehouse/auth-service/internal/broker"
+	"github.com/warehouse/auth-service/internal/db"
 
 	"go.uber.org/zap"
 )

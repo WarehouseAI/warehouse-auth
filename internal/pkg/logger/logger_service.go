@@ -1,9 +1,10 @@
 package logger
 
 import (
-	"auth-service/internal/pkg/errors"
-	"auth-service/internal/pkg/errors/repository_errors"
 	"fmt"
+
+	"github.com/warehouse/auth-service/internal/pkg/errors"
+	"github.com/warehouse/auth-service/internal/pkg/errors/repository_errors"
 
 	"go.uber.org/zap"
 )
