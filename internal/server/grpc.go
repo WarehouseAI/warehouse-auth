@@ -25,7 +25,7 @@ type grpcServer struct {
 }
 
 func (g *grpcServer) Start() {
-	g.log.Zap().Info("Start grpc server", zap.String("host", g.cfg.AuthAddr))
+	g.log.Zap().Info("Start grpc server", zap.String("host", g.cfg.Auth.Address))
 
 	g.wg.Add(1)
 	go func() {
@@ -52,7 +52,7 @@ func NewGrpcServer(
 	authHandler *internalGrpc.AuthHandler,
 ) (Server, error) {
 	var err error
-	listener, err := net.Listen("tcp", cfg.Grpc.UserHost)
+	listener, err := net.Listen("tcp", cfg.Grpc.Auth.Address)
 	if err != nil {
 		return nil, fmt.Errorf("cannot listen grps host: %w", err)
 	}

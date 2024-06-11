@@ -32,7 +32,7 @@ type (
 func NewAdapter(
 	config config.Grpc,
 ) (Adapter, error) {
-	conn, err := grpc.Dial(config.UserAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(config.User.Address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}

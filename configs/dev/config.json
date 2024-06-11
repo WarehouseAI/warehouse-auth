@@ -15,9 +15,12 @@
   },
   "locale": 3,
   "grpc": {
-    "host": "auth",
-    "port": 8010,
-    "user_addr": "user:8020"
+    "auth": {
+      "addr": "auth:8010"
+    },
+    "user": {
+      "addr": "user:8020"
+    }
   },
   "server": {
     "port": 8001,
@@ -27,7 +30,7 @@
       "https://warehousai.com"
     ]
   },
-  "pgSource": "postgresql://auth:authpass@db-auth:5440/auth_db?sslmode=disable",
+  "pgSource": "postgresql://auth:1234@db-auth:5001/postgres?sslmode=disable",
   "rabbitmq": {
     "port": 5672,
     "user": "rmq",

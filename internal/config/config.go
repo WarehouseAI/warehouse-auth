@@ -10,12 +10,13 @@ import (
 )
 
 type (
+	GrpcServer struct {
+		Address string
+	}
+
 	Grpc struct {
-		UserHost string
-		AuthHost string
-		Post     int
-		UserAddr string
-		AuthAddr string
+		Auth GrpcServer
+		User GrpcServer
 	}
 
 	Auth struct {
@@ -48,6 +49,13 @@ type (
 		AllowedOrigins []string
 	}
 
+	Mail struct {
+		Email    string
+		Password string
+		Host     string
+		Port     int
+	}
+
 	Time struct {
 		Locale int64
 	}
@@ -56,6 +64,7 @@ type (
 		Server   Server
 		Rabbit   Rabbit
 		Auth     Auth
+		Mail     Mail
 		Timeouts Timeouts
 		Postgres Postgres
 		Grpc     Grpc
@@ -141,6 +150,12 @@ func NewConfig(cfgPath string) (*Config, error) {
 	}
 
 	return &Config{
+		Mail: Mail{
+			Email:    v.GetString("mail.email"),
+			Password: v.GetString("mail.password"),
+			Host:     v.GetString("mail.host"),
+			Port:     v.GetInt("mail.port"),
+		},
 		Auth: Auth{
 			Key:                 jwtKey,
 			AccessTokenTimeout:  Timeout(v, "access_token"),  // таймаут цифрами для ttl токена
@@ -153,11 +168,12 @@ func NewConfig(cfgPath string) (*Config, error) {
 			AccCookie:      v.GetDuration("acc_cookie"),
 		},
 		Grpc: Grpc{
-			UserHost: v.GetString("grpc.user_host"),
-			AuthHost: v.GetString("grpc.auth_host"),
-			Post:     v.GetInt("grpc.port"),
-			AuthAddr: v.GetString("grpc.auth_addr"),
-			UserAddr: v.GetString("grpc.user_addr"),
+			Auth: GrpcServer{
+				Address: v.GetString("grpc.auth.address"),
+			},
+			User: GrpcServer{
+				Address: v.GetString("grpc.user.address"),
+			},
 		},
 		Postgres: Postgres{
 			DSN:     pgSource,
