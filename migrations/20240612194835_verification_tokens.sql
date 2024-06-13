@@ -2,16 +2,16 @@
 -- +goose StatementBegin
 SELECT 'up SQL query';
 -- +goose StatementEnd
-CREATE TABLE IF NOT EXISTS public.verification_tokens (
+CREATE TABLE public.verification_tokens (
   id BIGINT PRIMARY KEY,
   user_id public.xid NOT NULL UNIQUE,
   token VARCHAR(16) NOT NULL,
   send_to VARCHAR(255) NOT NULL UNIQUE,
   created_at BIGINT NOT NULL,
-  expires_at BIGINT NOT NULL,
+  expires_at BIGINT NOT NULL
 );
 ALTER TABLE public.verification_tokens
-ADD CONSTRAINT IF NOT EXISTS unique_verification_token_and_user UNIQUE (user_id, send_to);
+ADD CONSTRAINT unique_verification_token_and_user UNIQUE (user_id, send_to);
 -- +goose Down
 -- +goose StatementBegin
 SELECT 'down SQL query';

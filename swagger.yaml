@@ -1,0 +1,275 @@
+swagger: '2.0'
+info:
+  title: Warehouse-Auth
+  description: kiber-one
+  version: 1.0.0
+schemes:
+  - https
+host: warehousai.com
+basePath: /api/auth
+produces:
+  - application/json
+consumes:
+  - application/json
+paths:
+  /register:
+    post:
+      tags:
+        - Аутентификация
+      description: Регистрация
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: req
+          schema:
+            $ref: '#/definitions/RegisterRequest'
+      responses:
+        201:
+          description: Результат успешной авторизации
+          schema:
+            $ref: '#/definitions/RegisterResponse'
+        default:
+          $ref: '#/responses/default'
+
+  /:
+    post:
+      tags:
+        - Аутентификация
+      description: Вход
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: req
+          schema:
+            $ref: '#/definitions/LoginRequest'
+      responses:
+        200:
+          description: Результат успешного рефреша
+          schema:
+            $ref: '#/definitions/TokenResponse'
+        default:
+          $ref: '#/responses/default'
+
+  /refresh:
+    get:
+      tags:
+        - Аутентификация
+      description: Генерация токенов
+      produces:
+        - application/json
+
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+      responses:
+        200:
+          description: Результат успешного рефреша
+          schema:
+            $ref: '#/definitions/TokenResponse'
+        default:
+          $ref: '#/responses/default'
+
+  /logout:
+    delete:
+      tags:
+        - Аутентификация
+      description: Выход из системы
+      produces:
+        - application/json
+      responses:
+        204:
+          description: Success response
+          schema:
+            $ref: '#/definitions/SuccessResponse'
+        default:
+          $ref: '#/responses/default'
+
+  /full_logout:
+    delete:
+      tags:
+        - Аутентификация
+      description: Выход из системы со всех устройств
+      produces:
+        - application/json
+      responses:
+        204:
+          description: Success response
+          schema:
+            $ref: '#/definitions/SuccessResponse'
+        default:
+          $ref: '#/responses/default'
+
+  /verify/check:
+    get:
+      tags:
+        - Верификация аккаунта
+      description: верификация кода с почты, когда кликаешь на ссылку
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: acc_id
+          required: true
+          type: string
+        - in: query
+          name: token_id
+          required: true
+          type: string
+        - in: query
+          name: token
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success response
+          schema:
+            $ref: '#/definitions/TokenResponse'
+        default:
+          $ref: '#/responses/default'
+
+  /reset/request:
+    get:
+      tags:
+        - Восстановление пароля
+      description: запрос на сброс пароля
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: email
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success response
+          schema:
+            $ref: '#/definitions/SuccessResponse'
+        default:
+          $ref: '#/responses/default'
+
+  /reset/confirm:
+    post:
+      tags:
+        - Восстановление пароля
+      description: подтверждения кода
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: req
+          schema:
+            $ref: '#/definitions/ResetRequest'
+
+      responses:
+        200:
+          description: Success response
+          schema:
+            $ref: '#/definitions/SuccessResponse'
+        default:
+          $ref: '#/responses/default'
+
+definitions:
+  SuccessResponse:
+    type: object
+    description: Типовой запрос для ответа на Post запросы, которые не должны возвращать никаких данных
+    properties:
+      code:
+        type: integer
+        description: Код ответа
+      data:
+        type: boolean
+        description: Успешно
+
+  ErrorResponse:
+    type: object
+    description: Типовая ошибка
+    properties:
+      code:
+        type: integer
+        description: Код ошибки
+      error:
+        type: string
+        description: Сообщение ошибки
+
+  RegisterRequest:
+    type: object
+    description: Регистрация пользователя
+    required:
+      - username
+      - password
+      - email
+    properties:
+      username:
+        type: string
+        description: Логин
+      password:
+        type: string
+        description: Пароль
+      email:
+        type: string
+        description: Почта
+
+  RegisterResponse:
+    type: object
+    description: Обобщенный ответ на разные запрос авторизации
+    properties:
+      verification_token_id:
+        type: string
+        description: айди верификационного токена для фронтенда
+
+  LoginRequest:
+    type: object
+    description: Логин
+    required:
+      - login
+      - password
+    properties:
+      login:
+        type: string
+        description: Логин
+      password:
+        type: string
+        description: Пароль
+
+  ResetRequest:
+    type: object
+    description: данные для восстановления пароля
+    required:
+      - acc_id
+      - new_password
+      - token
+      - token_id
+    properties:
+      acc_id:
+        type: string
+        description: айди аккаунта
+      new_password:
+        type: string
+        description: новый пароль
+      token:
+        type: string
+        description: токен полученный на почте
+      token_id:
+        type: string
+        description: айди созданного токена
+
+  TokenResponse:
+    type: object
+    description: Набор токенов для аутентификации
+    properties:
+      access_token:
+        type: string
+        description: access_token для валидации аутентификации
+      refresh_token:
+        type: string
+        description: refresh_token для получения новых токенов
+
+responses:
+  default:
+    description: Error
+    schema:
+      $ref: '#/definitions/ErrorResponse'

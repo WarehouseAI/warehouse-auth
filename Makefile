@@ -14,6 +14,13 @@ pb:
 migrate.create:
 	goose -dir migrations create ${name} sql
 
+swagger.start:
+	docker run --restart unless-stopped -d --name auth-swagger -p 9903:8080 -e SWAGGER_JSON=/specs/swagger.yaml -v $(shell pwd)/:/specs swaggerapi/swagger-ui
+
+swagger.stop:
+	docker stop auth-swagger
+	docker rm auth-swagger
+
 setup.extensions:
 	docker run -it -d --env-file=.env --name db-ext-setup alpine:3.19 ;\
 	docker cp ./migrations/extensions/xid.sql db-ext-setup:/ ;\

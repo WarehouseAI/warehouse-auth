@@ -22,8 +22,11 @@ ARG env
 COPY --from=build-deps /usr/src/backend/run.sh run.sh
 COPY --from=build-deps /usr/src/backend/main main
 COPY --from=build-deps /usr/src/backend/configs/$env configs/
+RUN chmod +x run.sh
+RUN apk add --no-cache bash
+RUN apk add --no-cache libc6-compat
 
-ARG service 
-ENV LOG_PATH=/logs/$service.log
+ARG module 
+ENV LOG_PATH=/logs/$module.log
 
 ENTRYPOINT ["./run.sh"]

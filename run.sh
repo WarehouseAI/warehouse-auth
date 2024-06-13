@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-exec ./main -path config &>> $LOG_PATH
+exec ./main -path ./configs/dev &>> "$LOG_PATH"
