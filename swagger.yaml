@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: Warehouse-Auth
-  description: kiber-one
+  description: Сервис авторизации
   version: 1.0.0
 schemes:
   - https
