@@ -86,7 +86,6 @@ func NewHttpServer(
 
 func (s *appServer) initRoutes(router *mux.Router) {
 	router.Use(s.middleware.QueueMiddleware)
-	r := router.PathPrefix("/api").Subrouter()
 
-	s.authEndpoints.FillHandlers(r)
+	s.authEndpoints.FillHandlers(router)
 }

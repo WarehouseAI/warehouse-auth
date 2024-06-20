@@ -45,5 +45,6 @@ func NewMiddleware(
 		log:        log,
 		timeouts:   timeouts,
 		jwtService: jwtService,
+		queue:      make(chan struct{}, 20),
 	}
 }

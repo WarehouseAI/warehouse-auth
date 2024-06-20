@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"fmt"
 	"runtime"
 	"strings"
 	"unicode"
@@ -35,7 +36,8 @@ func getFunctionsCallTrace(skip int) []runtime.Frame {
 
 	var resultFrames []runtime.Frame
 	for frame, hasNext := frames.Next(); hasNext; frame, hasNext = frames.Next() {
-		if strings.HasPrefix(frame.Function, "github.com/custom-app/coffee") {
+		fmt.Println(frame.Function)
+		if strings.HasPrefix(frame.Function, "github.com/warehouse/auth-service") {
 			if strings.Contains(frame.File, "/http/handler.go") {
 				break
 			}

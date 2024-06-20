@@ -16,10 +16,10 @@
   "locale": 3,
   "grpc": {
     "auth": {
-      "addr": "auth:8010"
+      "address": "auth:8010"
     },
     "user": {
-      "addr": "user:8020"
+      "address": "user:8020"
     }
   },
   "server": {

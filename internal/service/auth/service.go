@@ -277,21 +277,21 @@ func (s *service) Register(
 	_, err = s.userAdapter.GetByEmail(ctx, reqData.Email)
 	if err != nil {
 		extError := status.Convert(err)
-		if extError.Code() != codes.AlreadyExists {
+		if extError.Code() != codes.NotFound {
 			return "", s.log.ServiceGrpcAdapterError(err)
+		} else {
+			return "", errors.AuthUserAlreadyExists
 		}
-
-		return "", errors.AuthUserAlreadyExists
 	}
 
 	_, err = s.userAdapter.GetByLogin(ctx, reqData.Username)
 	if err != nil {
 		extError := status.Convert(err)
-		if extError.Code() != codes.AlreadyExists {
+		if extError.Code() != codes.NotFound {
 			return "", s.log.ServiceGrpcAdapterError(err)
+		} else {
+			return "", errors.AuthUserAlreadyExists
 		}
-
-		return "", errors.AuthUserAlreadyExists
 	}
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(reqData.Password), 12)

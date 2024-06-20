@@ -36,6 +36,7 @@ func NewAdapter(
 	if err != nil {
 		return nil, err
 	}
+
 	client := warehousepb.NewUserServiceClient(conn)
 
 	return &adapter{
